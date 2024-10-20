@@ -111,7 +111,7 @@ head(refdata)       # examine first 6 rows
 ```{r table1chp11, echo=FALSE, warning=FALSE}
 # Illustrate long data
 table1chp11 <- data.frame(refdata |> slice(1:10) |>
-  dplyr::select(., 2, 4, 5, 6, 7, 9, 10, 12, 15, 19))
+  dplyr::select(2, 4, 5, 6, 7, 9, 10, 12, 15, 19))
 
 kable(table1chp11, booktabs=T, 
       caption="Key variables from the first 10 rows of data from the College Basketball Referees Case Study.  Each row represents a different foul called; we see all 8 first-half fouls from Game 1 followed by the first 2 fouls called in Game 2.") |>
@@ -220,7 +220,7 @@ table(refdata$visitor)
 onepergame <- refdata |>
   group_by(game) |>
   filter(row_number() == 1) |>
-  ungroup
+  ungroup()
 p1 <- onepergame |> count(hometeam) |> 
   mutate(prop = n/sum(n)) |>
   rename(n_games = n)
@@ -476,7 +476,7 @@ As we saw in Section \@ref(twostage), to avoid clustering we could consider fitt
 # Model for Game 110 only (foul.diff as sole predictor)
 game110 <- refdata |> 
   filter(game == 110) |>   # pick off data for Game 110
-  select(.,4, 5, 6, 7, 9, 10, 15, 19)     
+  select(4, 5, 6, 7, 9, 10, 15, 19)     
   # took out 2 and 12 - too wide
 
 kable(game110, booktabs=T, 

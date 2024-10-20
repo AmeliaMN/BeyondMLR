@@ -4,27 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Beyond Multiple Linear Regression</title>
+  <title>Chapter 11</title>
   <meta name="description" content="An applied textbook on generalized linear models and multilevel models for advanced undergraduates, featuring many real, unique data sets. It is intended to be accessible to undergraduate students who have successfully completed a regression course. Even though there is no mathematical prerequisite, we still introduce fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping in an intuitive and applied manner. We believe strongly in case studies featuring real data and real research questions; thus, most of the data in the textbook arises from collaborative research conducted by the authors and their students, or from student projects. Our goal is that, after working through this material, students will develop an expanded toolkit and a greater appreciation for the wider world of data and statistical modeling." />
-  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.40 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Beyond Multiple Linear Regression" />
+  <meta property="og:title" content="Chapter 11" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="data/book_cover.jpg" />
+  <meta property="og:image" content="/data/book_cover.jpg" />
   <meta property="og:description" content="An applied textbook on generalized linear models and multilevel models for advanced undergraduates, featuring many real, unique data sets. It is intended to be accessible to undergraduate students who have successfully completed a regression course. Even though there is no mathematical prerequisite, we still introduce fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping in an intuitive and applied manner. We believe strongly in case studies featuring real data and real research questions; thus, most of the data in the textbook arises from collaborative research conducted by the authors and their students, or from student projects. Our goal is that, after working through this material, students will develop an expanded toolkit and a greater appreciation for the wider world of data and statistical modeling." />
   <meta name="github-repo" content="proback/BeyondMLR" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Beyond Multiple Linear Regression" />
+  <meta name="twitter:title" content="Chapter 11" />
   
   <meta name="twitter:description" content="An applied textbook on generalized linear models and multilevel models for advanced undergraduates, featuring many real, unique data sets. It is intended to be accessible to undergraduate students who have successfully completed a regression course. Even though there is no mathematical prerequisite, we still introduce fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping in an intuitive and applied manner. We believe strongly in case studies featuring real data and real research questions; thus, most of the data in the textbook arises from collaborative research conducted by the authors and their students, or from student projects. Our goal is that, after working through this material, students will develop an expanded toolkit and a greater appreciation for the wider world of data and statistical modeling." />
-  <meta name="twitter:image" content="data/book_cover.jpg" />
+  <meta name="twitter:image" content="/data/book_cover.jpg" />
 
 <meta name="author" content="Paul Roback and Julie Legler" />
 
 
-<meta name="date" content="2021-01-26" />
+<meta name="date" content="2024-10-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 
 <link rel="next" href="ch-MLRreview.html"/>
-<script src="libs/jquery/jquery.min.js"></script>
+<script src="libs/jquery/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,24 +49,26 @@
 
 
 
-
-<script src="libs/accessible-code-block/empty-anchor.js"></script>
+<link href="libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections/anchor-sections.js"></script>
 <script src="libs/kePrint/kePrint.js"></script>
+<link href="libs/lightable/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,13 +88,13 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -105,7 +107,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -119,7 +121,35 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<link rel="stylesheet" href="css\style.css" type="text/css" />
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
 <body>
@@ -135,27 +165,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">Beyond Multiple Linear Regression</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#description"><i class="fa fa-check"></i>Description</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-the-authors"><i class="fa fa-check"></i>About the Authors</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#versions-of-r-packages-used"><i class="fa fa-check"></i>Versions of R Packages Used</a></li>
 </ul></li>
-<li class="chapter" data-level="1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html"><i class="fa fa-check"></i><b>1</b> Review of Multiple Linear Regression</a><ul>
+<li class="chapter" data-level="1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html"><i class="fa fa-check"></i><b>1</b> Review of Multiple Linear Regression</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#learning-objectives"><i class="fa fa-check"></i><b>1.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="1.2" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#introduction-to-beyond-multiple-linear-regression"><i class="fa fa-check"></i><b>1.2</b> Introduction to Beyond Multiple Linear Regression</a></li>
-<li class="chapter" data-level="1.3" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#assumptions-for-linear-least-squares-regression"><i class="fa fa-check"></i><b>1.3</b> Assumptions for Linear Least Squares Regression</a><ul>
+<li class="chapter" data-level="1.3" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#assumptions-for-linear-least-squares-regression"><i class="fa fa-check"></i><b>1.3</b> Assumptions for Linear Least Squares Regression</a>
+<ul>
 <li class="chapter" data-level="1.3.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#cases-without-assumption-violations"><i class="fa fa-check"></i><b>1.3.1</b> Cases Without Assumption Violations</a></li>
 <li class="chapter" data-level="1.3.2" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#cases-with-assumption-violations"><i class="fa fa-check"></i><b>1.3.2</b> Cases With Assumption Violations</a></li>
 </ul></li>
-<li class="chapter" data-level="1.4" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#review-of-multiple-linear-regression"><i class="fa fa-check"></i><b>1.4</b> Review of Multiple Linear Regression</a><ul>
+<li class="chapter" data-level="1.4" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#review-of-multiple-linear-regression"><i class="fa fa-check"></i><b>1.4</b> Review of Multiple Linear Regression</a>
+<ul>
 <li class="chapter" data-level="1.4.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#cs:derby"><i class="fa fa-check"></i><b>1.4.1</b> Case Study: Kentucky Derby</a></li>
 </ul></li>
-<li class="chapter" data-level="1.5" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#explorech1"><i class="fa fa-check"></i><b>1.5</b> Initial Exploratory Analyses</a><ul>
+<li class="chapter" data-level="1.5" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#explorech1"><i class="fa fa-check"></i><b>1.5</b> Initial Exploratory Analyses</a>
+<ul>
 <li class="chapter" data-level="1.5.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#data-organization"><i class="fa fa-check"></i><b>1.5.1</b> Data Organization</a></li>
 <li class="chapter" data-level="1.5.2" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#univariate-summaries"><i class="fa fa-check"></i><b>1.5.2</b> Univariate Summaries</a></li>
 <li class="chapter" data-level="1.5.3" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#bivariate-summaries"><i class="fa fa-check"></i><b>1.5.3</b> Bivariate Summaries</a></li>
 </ul></li>
-<li class="chapter" data-level="1.6" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#multreg"><i class="fa fa-check"></i><b>1.6</b> Multiple Linear Regression Modeling</a><ul>
+<li class="chapter" data-level="1.6" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#multreg"><i class="fa fa-check"></i><b>1.6</b> Multiple Linear Regression Modeling</a>
+<ul>
 <li class="chapter" data-level="1.6.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#SLRcontinuous"><i class="fa fa-check"></i><b>1.6.1</b> Simple Linear Regression with a Continuous Predictor</a></li>
 <li class="chapter" data-level="1.6.2" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#linear-regression-with-a-binary-predictor"><i class="fa fa-check"></i><b>1.6.2</b> Linear Regression with a Binary Predictor</a></li>
 <li class="chapter" data-level="1.6.3" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#multiple-linear-regression-with-two-predictors"><i class="fa fa-check"></i><b>1.6.3</b> Multiple Linear Regression with Two Predictors</a></li>
@@ -164,57 +200,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.6.6" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#multiple-linear-regression-with-an-interaction-term"><i class="fa fa-check"></i><b>1.6.6</b> Multiple Linear Regression with an Interaction Term</a></li>
 <li class="chapter" data-level="1.6.7" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#multreg_build"><i class="fa fa-check"></i><b>1.6.7</b> Building a Multiple Linear Regression Model</a></li>
 </ul></li>
-<li class="chapter" data-level="1.7" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#preview-of-remaining-chapters"><i class="fa fa-check"></i><b>1.7</b> Preview of Remaining Chapters</a><ul>
+<li class="chapter" data-level="1.7" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#preview-of-remaining-chapters"><i class="fa fa-check"></i><b>1.7</b> Preview of Remaining Chapters</a>
+<ul>
 <li class="chapter" data-level="1.7.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#soccer"><i class="fa fa-check"></i><b>1.7.1</b> Soccer</a></li>
 <li class="chapter" data-level="1.7.2" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#elephant-mating"><i class="fa fa-check"></i><b>1.7.2</b> Elephant Mating</a></li>
 <li class="chapter" data-level="1.7.3" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#parenting-and-gang-activity"><i class="fa fa-check"></i><b>1.7.3</b> Parenting and Gang Activity</a></li>
 <li class="chapter" data-level="1.7.4" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#crime"><i class="fa fa-check"></i><b>1.7.4</b> Crime</a></li>
 </ul></li>
-<li class="chapter" data-level="1.8" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#exercises"><i class="fa fa-check"></i><b>1.8</b> Exercises</a><ul>
+<li class="chapter" data-level="1.8" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#exercises"><i class="fa fa-check"></i><b>1.8</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="1.8.1" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#conceptual-exercises"><i class="fa fa-check"></i><b>1.8.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="1.8.2" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#guided-exercises"><i class="fa fa-check"></i><b>1.8.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="1.8.3" data-path="ch-MLRreview.html"><a href="ch-MLRreview.html#open-ended-exercises"><i class="fa fa-check"></i><b>1.8.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html"><i class="fa fa-check"></i><b>2</b> Beyond Least Squares: Using Likelihoods</a><ul>
+<li class="chapter" data-level="2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html"><i class="fa fa-check"></i><b>2</b> Beyond Least Squares: Using Likelihoods</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="2.2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#case-study-does-sex-run-in-families"><i class="fa fa-check"></i><b>2.2</b> Case Study: Does Sex Run in Families?</a><ul>
+<li class="chapter" data-level="2.2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#case-study-does-sex-run-in-families"><i class="fa fa-check"></i><b>2.2</b> Case Study: Does Sex Run in Families?</a>
+<ul>
 <li class="chapter" data-level="2.2.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#research-questions"><i class="fa fa-check"></i><b>2.2.1</b> Research Questions</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#model-0-sex-unconditional-equal-probabilities"><i class="fa fa-check"></i><b>2.3</b> Model 0: Sex Unconditional, Equal Probabilities</a></li>
-<li class="chapter" data-level="2.4" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#sex_unconditional_model"><i class="fa fa-check"></i><b>2.4</b> Model 1: Sex Unconditional, Unequal Probabilities</a><ul>
+<li class="chapter" data-level="2.4" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#sex_unconditional_model"><i class="fa fa-check"></i><b>2.4</b> Model 1: Sex Unconditional, Unequal Probabilities</a>
+<ul>
 <li class="chapter" data-level="2.4.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#what-is-a-likelihood"><i class="fa fa-check"></i><b>2.4.1</b> What Is a Likelihood?</a></li>
 <li class="chapter" data-level="2.4.2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#findMLE.sec"><i class="fa fa-check"></i><b>2.4.2</b> Finding MLEs</a></li>
 <li class="chapter" data-level="2.4.3" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#summary"><i class="fa fa-check"></i><b>2.4.3</b> Summary</a></li>
 <li class="chapter" data-level="2.4.4" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#is-a-likelihood-a-probability-function-optional"><i class="fa fa-check"></i><b>2.4.4</b> Is a Likelihood a Probability Function? (optional)</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#sex_conditional.sec"><i class="fa fa-check"></i><b>2.5</b> Model 2: Sex Conditional</a><ul>
+<li class="chapter" data-level="2.5" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#sex_conditional.sec"><i class="fa fa-check"></i><b>2.5</b> Model 2: Sex Conditional</a>
+<ul>
 <li class="chapter" data-level="2.5.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#model-specification"><i class="fa fa-check"></i><b>2.5.1</b> Model Specification</a></li>
 <li class="chapter" data-level="2.5.2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#application-to-hypothetical-data"><i class="fa fa-check"></i><b>2.5.2</b> Application to Hypothetical Data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.6" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#case-study-analysis-of-the-nlsy-data"><i class="fa fa-check"></i><b>2.6</b> Case Study: Analysis of the NLSY Data</a><ul>
+<li class="chapter" data-level="2.6" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#case-study-analysis-of-the-nlsy-data"><i class="fa fa-check"></i><b>2.6</b> Case Study: Analysis of the NLSY Data</a>
+<ul>
 <li class="chapter" data-level="2.6.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#model-building-plan"><i class="fa fa-check"></i><b>2.6.1</b> Model Building Plan</a></li>
 <li class="chapter" data-level="2.6.2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#EDA.sec"><i class="fa fa-check"></i><b>2.6.2</b> Exploratory Data Analysis</a></li>
 <li class="chapter" data-level="2.6.3" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#likelihood-for-the-sex-unconditional-model"><i class="fa fa-check"></i><b>2.6.3</b> Likelihood for the Sex Unconditional Model</a></li>
 <li class="chapter" data-level="2.6.4" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#sex-cond-lik"><i class="fa fa-check"></i><b>2.6.4</b> Likelihood for the Sex Conditional Model</a></li>
 <li class="chapter" data-level="2.6.5" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#sec-lrtest"><i class="fa fa-check"></i><b>2.6.5</b> Model Comparisons</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#model-3-stopping-rule-model-waiting-for-a-boy"><i class="fa fa-check"></i><b>2.7</b> Model 3: Stopping Rule Model (waiting for a boy)</a><ul>
+<li class="chapter" data-level="2.7" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#model-3-stopping-rule-model-waiting-for-a-boy"><i class="fa fa-check"></i><b>2.7</b> Model 3: Stopping Rule Model (waiting for a boy)</a>
+<ul>
 <li class="chapter" data-level="2.7.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#non-nested-models"><i class="fa fa-check"></i><b>2.7.1</b> Non-nested Models</a></li>
 </ul></li>
 <li class="chapter" data-level="2.8" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#summary-of-model-building"><i class="fa fa-check"></i><b>2.8</b> Summary of Model Building</a></li>
 <li class="chapter" data-level="2.9" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#likelihood-based-methods"><i class="fa fa-check"></i><b>2.9</b> Likelihood-Based Methods</a></li>
 <li class="chapter" data-level="2.10" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#likelihoods-and-this-course"><i class="fa fa-check"></i><b>2.10</b> Likelihoods and This Course</a></li>
-<li class="chapter" data-level="2.11" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#exercises-1"><i class="fa fa-check"></i><b>2.11</b> Exercises</a><ul>
+<li class="chapter" data-level="2.11" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#exercises-1"><i class="fa fa-check"></i><b>2.11</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="2.11.1" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#conceptual-exercises-1"><i class="fa fa-check"></i><b>2.11.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="2.11.2" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#guided-exercises-1"><i class="fa fa-check"></i><b>2.11.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="2.11.3" data-path="ch-beyondmost.html"><a href="ch-beyondmost.html#open-ended-exercises-1"><i class="fa fa-check"></i><b>2.11.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="ch-distthry.html"><a href="ch-distthry.html"><i class="fa fa-check"></i><b>3</b> Distribution Theory</a><ul>
+<li class="chapter" data-level="3" data-path="ch-distthry.html"><a href="ch-distthry.html"><i class="fa fa-check"></i><b>3</b> Distribution Theory</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="ch-distthry.html"><a href="ch-distthry.html#learning-objectives-2"><i class="fa fa-check"></i><b>3.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="3.2" data-path="ch-distthry.html"><a href="ch-distthry.html#introduction"><i class="fa fa-check"></i><b>3.2</b> Introduction</a></li>
-<li class="chapter" data-level="3.3" data-path="ch-distthry.html"><a href="ch-distthry.html#discrete-random-variables"><i class="fa fa-check"></i><b>3.3</b> Discrete Random Variables</a><ul>
+<li class="chapter" data-level="3.3" data-path="ch-distthry.html"><a href="ch-distthry.html#discrete-random-variables"><i class="fa fa-check"></i><b>3.3</b> Discrete Random Variables</a>
+<ul>
 <li class="chapter" data-level="3.3.1" data-path="ch-distthry.html"><a href="ch-distthry.html#sec-binary"><i class="fa fa-check"></i><b>3.3.1</b> Binary Random Variable</a></li>
 <li class="chapter" data-level="3.3.2" data-path="ch-distthry.html"><a href="ch-distthry.html#sec-binomial"><i class="fa fa-check"></i><b>3.3.2</b> Binomial Random Variable</a></li>
 <li class="chapter" data-level="3.3.3" data-path="ch-distthry.html"><a href="ch-distthry.html#geometric-random-variable"><i class="fa fa-check"></i><b>3.3.3</b> Geometric Random Variable</a></li>
@@ -222,31 +269,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3.5" data-path="ch-distthry.html"><a href="ch-distthry.html#hypergeometric-random-variable"><i class="fa fa-check"></i><b>3.3.5</b> Hypergeometric Random Variable</a></li>
 <li class="chapter" data-level="3.3.6" data-path="ch-distthry.html"><a href="ch-distthry.html#poisson-random-variable"><i class="fa fa-check"></i><b>3.3.6</b> Poisson Random Variable</a></li>
 </ul></li>
-<li class="chapter" data-level="3.4" data-path="ch-distthry.html"><a href="ch-distthry.html#continuous-random-variables"><i class="fa fa-check"></i><b>3.4</b> Continuous Random Variables</a><ul>
+<li class="chapter" data-level="3.4" data-path="ch-distthry.html"><a href="ch-distthry.html#continuous-random-variables"><i class="fa fa-check"></i><b>3.4</b> Continuous Random Variables</a>
+<ul>
 <li class="chapter" data-level="3.4.1" data-path="ch-distthry.html"><a href="ch-distthry.html#exponential-random-variable"><i class="fa fa-check"></i><b>3.4.1</b> Exponential Random Variable</a></li>
 <li class="chapter" data-level="3.4.2" data-path="ch-distthry.html"><a href="ch-distthry.html#gamma-random-variable"><i class="fa fa-check"></i><b>3.4.2</b> Gamma Random Variable</a></li>
 <li class="chapter" data-level="3.4.3" data-path="ch-distthry.html"><a href="ch-distthry.html#normal-gaussian-random-variable"><i class="fa fa-check"></i><b>3.4.3</b> Normal (Gaussian) Random Variable</a></li>
 <li class="chapter" data-level="3.4.4" data-path="ch-distthry.html"><a href="ch-distthry.html#beta-random-variable"><i class="fa fa-check"></i><b>3.4.4</b> Beta Random Variable</a></li>
 </ul></li>
-<li class="chapter" data-level="3.5" data-path="ch-distthry.html"><a href="ch-distthry.html#distributions-used-in-testing"><i class="fa fa-check"></i><b>3.5</b> Distributions Used in Testing</a><ul>
+<li class="chapter" data-level="3.5" data-path="ch-distthry.html"><a href="ch-distthry.html#distributions-used-in-testing"><i class="fa fa-check"></i><b>3.5</b> Distributions Used in Testing</a>
+<ul>
 <li class="chapter" data-level="3.5.1" data-path="ch-distthry.html"><a href="ch-distthry.html#chi2-distribution"><i class="fa fa-check"></i><b>3.5.1</b> <span class="math inline">\(\chi^2\)</span> Distribution</a></li>
 <li class="chapter" data-level="3.5.2" data-path="ch-distthry.html"><a href="ch-distthry.html#students-t-distribution"><i class="fa fa-check"></i><b>3.5.2</b> Student’s <span class="math inline">\(t\)</span>-Distribution</a></li>
 <li class="chapter" data-level="3.5.3" data-path="ch-distthry.html"><a href="ch-distthry.html#f-distribution"><i class="fa fa-check"></i><b>3.5.3</b> <span class="math inline">\(F\)</span>-Distribution</a></li>
 </ul></li>
 <li class="chapter" data-level="3.6" data-path="ch-distthry.html"><a href="ch-distthry.html#additional-resources"><i class="fa fa-check"></i><b>3.6</b> Additional Resources</a></li>
-<li class="chapter" data-level="3.7" data-path="ch-distthry.html"><a href="ch-distthry.html#exercises-2"><i class="fa fa-check"></i><b>3.7</b> Exercises</a><ul>
+<li class="chapter" data-level="3.7" data-path="ch-distthry.html"><a href="ch-distthry.html#exercises-2"><i class="fa fa-check"></i><b>3.7</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="3.7.1" data-path="ch-distthry.html"><a href="ch-distthry.html#conceptual-exercises-2"><i class="fa fa-check"></i><b>3.7.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="3.7.2" data-path="ch-distthry.html"><a href="ch-distthry.html#guided-exercises-2"><i class="fa fa-check"></i><b>3.7.2</b> Guided Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html"><i class="fa fa-check"></i><b>4</b> Poisson Regression</a><ul>
+<li class="chapter" data-level="4" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html"><i class="fa fa-check"></i><b>4</b> Poisson Regression</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#learning-objectives-3"><i class="fa fa-check"></i><b>4.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="4.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#introduction-to-poisson-regression"><i class="fa fa-check"></i><b>4.2</b> Introduction to Poisson Regression</a><ul>
+<li class="chapter" data-level="4.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#introduction-to-poisson-regression"><i class="fa fa-check"></i><b>4.2</b> Introduction to Poisson Regression</a>
+<ul>
 <li class="chapter" data-level="4.2.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#poisson-regression-assumptions"><i class="fa fa-check"></i><b>4.2.1</b> Poisson Regression Assumptions</a></li>
 <li class="chapter" data-level="4.2.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#a-graphical-look-at-poisson-regression"><i class="fa fa-check"></i><b>4.2.2</b> A Graphical Look at Poisson Regression</a></li>
 </ul></li>
 <li class="chapter" data-level="4.3" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#case-studies-overview"><i class="fa fa-check"></i><b>4.3</b> Case Studies Overview</a></li>
-<li class="chapter" data-level="4.4" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#cs-philippines"><i class="fa fa-check"></i><b>4.4</b> Case Study: Household Size in the Philippines</a><ul>
+<li class="chapter" data-level="4.4" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#cs-philippines"><i class="fa fa-check"></i><b>4.4</b> Case Study: Household Size in the Philippines</a>
+<ul>
 <li class="chapter" data-level="4.4.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#organizedata4"><i class="fa fa-check"></i><b>4.4.1</b> Data Organization</a></li>
 <li class="chapter" data-level="4.4.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#exploreHH"><i class="fa fa-check"></i><b>4.4.2</b> Exploratory Data Analyses</a></li>
 <li class="chapter" data-level="4.4.3" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#sec-PoisInference"><i class="fa fa-check"></i><b>4.4.3</b> Estimation and Inference</a></li>
@@ -257,22 +310,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4.8" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#sec-PoisResid"><i class="fa fa-check"></i><b>4.4.8</b> Residuals for Poisson Models (optional)</a></li>
 <li class="chapter" data-level="4.4.9" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#sec-PoisGOF"><i class="fa fa-check"></i><b>4.4.9</b> Goodness-of-Fit</a></li>
 </ul></li>
-<li class="chapter" data-level="4.5" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#linear-least-squares-vs.-poisson-regression"><i class="fa fa-check"></i><b>4.5</b> Linear Least Squares  vs. Poisson Regression </a></li>
-<li class="chapter" data-level="4.6" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#case-study-campus-crime"><i class="fa fa-check"></i><b>4.6</b> Case Study: Campus Crime</a><ul>
+<li class="chapter" data-level="4.5" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#linear-least-squares-vs.-poisson-regression"><i class="fa fa-check"></i><b>4.5</b> Linear Least Squares vs. Poisson Regression </a></li>
+<li class="chapter" data-level="4.6" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#case-study-campus-crime"><i class="fa fa-check"></i><b>4.6</b> Case Study: Campus Crime</a>
+<ul>
 <li class="chapter" data-level="4.6.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#data-organization-1"><i class="fa fa-check"></i><b>4.6.1</b> Data Organization</a></li>
 <li class="chapter" data-level="4.6.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#exploratory-data-analysis"><i class="fa fa-check"></i><b>4.6.2</b> Exploratory Data Analysis</a></li>
 <li class="chapter" data-level="4.6.3" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#accounting-for-enrollment"><i class="fa fa-check"></i><b>4.6.3</b> Accounting for Enrollment</a></li>
 </ul></li>
 <li class="chapter" data-level="4.7" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#modeling-assumptions"><i class="fa fa-check"></i><b>4.7</b> Modeling Assumptions</a></li>
-<li class="chapter" data-level="4.8" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#initial-models"><i class="fa fa-check"></i><b>4.8</b> Initial Models</a><ul>
+<li class="chapter" data-level="4.8" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#initial-models"><i class="fa fa-check"></i><b>4.8</b> Initial Models</a>
+<ul>
 <li class="chapter" data-level="4.8.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#tukeys-honestly-significant-differences"><i class="fa fa-check"></i><b>4.8.1</b> Tukey’s Honestly Significant Differences</a></li>
 </ul></li>
-<li class="chapter" data-level="4.9" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#sec-overdispPois"><i class="fa fa-check"></i><b>4.9</b> Overdispersion</a><ul>
+<li class="chapter" data-level="4.9" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#sec-overdispPois"><i class="fa fa-check"></i><b>4.9</b> Overdispersion</a>
+<ul>
 <li class="chapter" data-level="4.9.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#dispersion-parameter-adjustment"><i class="fa fa-check"></i><b>4.9.1</b> Dispersion Parameter Adjustment</a></li>
 <li class="chapter" data-level="4.9.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#no-dispersion-vs.-overdispersion"><i class="fa fa-check"></i><b>4.9.2</b> No Dispersion vs. Overdispersion</a></li>
 <li class="chapter" data-level="4.9.3" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#negative-binomial-modeling"><i class="fa fa-check"></i><b>4.9.3</b> Negative Binomial Modeling</a></li>
 </ul></li>
-<li class="chapter" data-level="4.10" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#cs:drinking"><i class="fa fa-check"></i><b>4.10</b> Case Study: Weekend Drinking</a><ul>
+<li class="chapter" data-level="4.10" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#cs:drinking"><i class="fa fa-check"></i><b>4.10</b> Case Study: Weekend Drinking</a>
+<ul>
 <li class="chapter" data-level="4.10.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#research-question"><i class="fa fa-check"></i><b>4.10.1</b> Research Question</a></li>
 <li class="chapter" data-level="4.10.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#data-organization-2"><i class="fa fa-check"></i><b>4.10.2</b> Data Organization</a></li>
 <li class="chapter" data-level="4.10.3" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#exploratory-data-analysis-1"><i class="fa fa-check"></i><b>4.10.3</b> Exploratory Data Analysis</a></li>
@@ -282,34 +339,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.10.7" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#residual-plot"><i class="fa fa-check"></i><b>4.10.7</b> Residual Plot</a></li>
 <li class="chapter" data-level="4.10.8" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#limitations"><i class="fa fa-check"></i><b>4.10.8</b> Limitations</a></li>
 </ul></li>
-<li class="chapter" data-level="4.11" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#exercises-3"><i class="fa fa-check"></i><b>4.11</b> Exercises</a><ul>
+<li class="chapter" data-level="4.11" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#exercises-3"><i class="fa fa-check"></i><b>4.11</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="4.11.1" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#exer:concept"><i class="fa fa-check"></i><b>4.11.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="4.11.2" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#guided-exercises-3"><i class="fa fa-check"></i><b>4.11.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="4.11.3" data-path="ch-poissonreg.html"><a href="ch-poissonreg.html#open-ended-exercises-2"><i class="fa fa-check"></i><b>4.11.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ch-glms.html"><a href="ch-glms.html"><i class="fa fa-check"></i><b>5</b> Generalized Linear Models: A Unifying Theory</a><ul>
+<li class="chapter" data-level="5" data-path="ch-glms.html"><a href="ch-glms.html"><i class="fa fa-check"></i><b>5</b> Generalized Linear Models: A Unifying Theory</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="ch-glms.html"><a href="ch-glms.html#learning-objectives-4"><i class="fa fa-check"></i><b>5.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="5.2" data-path="ch-glms.html"><a href="ch-glms.html#one-parameter-exponential-families"><i class="fa fa-check"></i><b>5.2</b> One-Parameter Exponential Families</a><ul>
+<li class="chapter" data-level="5.2" data-path="ch-glms.html"><a href="ch-glms.html#one-parameter-exponential-families"><i class="fa fa-check"></i><b>5.2</b> One-Parameter Exponential Families</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="ch-glms.html"><a href="ch-glms.html#one-parameter-exponential-family-poisson"><i class="fa fa-check"></i><b>5.2.1</b> One-Parameter Exponential Family: Poisson</a></li>
 <li class="chapter" data-level="5.2.2" data-path="ch-glms.html"><a href="ch-glms.html#one-parameter-exponential-family-normal"><i class="fa fa-check"></i><b>5.2.2</b> One-Parameter Exponential Family: Normal</a></li>
 </ul></li>
 <li class="chapter" data-level="5.3" data-path="ch-glms.html"><a href="ch-glms.html#generalized-linear-modeling"><i class="fa fa-check"></i><b>5.3</b> Generalized Linear Modeling</a></li>
 <li class="chapter" data-level="5.4" data-path="ch-glms.html"><a href="ch-glms.html#exercises-4"><i class="fa fa-check"></i><b>5.4</b> Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="ch-logreg.html"><a href="ch-logreg.html"><i class="fa fa-check"></i><b>6</b> Logistic Regression</a><ul>
+<li class="chapter" data-level="6" data-path="ch-logreg.html"><a href="ch-logreg.html"><i class="fa fa-check"></i><b>6</b> Logistic Regression</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="ch-logreg.html"><a href="ch-logreg.html#learning-objectives-5"><i class="fa fa-check"></i><b>6.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="6.2" data-path="ch-logreg.html"><a href="ch-logreg.html#introduction-to-logistic-regression"><i class="fa fa-check"></i><b>6.2</b> Introduction to Logistic Regression</a><ul>
+<li class="chapter" data-level="6.2" data-path="ch-logreg.html"><a href="ch-logreg.html#introduction-to-logistic-regression"><i class="fa fa-check"></i><b>6.2</b> Introduction to Logistic Regression</a>
+<ul>
 <li class="chapter" data-level="6.2.1" data-path="ch-logreg.html"><a href="ch-logreg.html#logistic-regression-assumptions"><i class="fa fa-check"></i><b>6.2.1</b> Logistic Regression Assumptions</a></li>
 <li class="chapter" data-level="6.2.2" data-path="ch-logreg.html"><a href="ch-logreg.html#a-graphical-look-at-logistic-regression"><i class="fa fa-check"></i><b>6.2.2</b> A Graphical Look at Logistic Regression</a></li>
 </ul></li>
 <li class="chapter" data-level="6.3" data-path="ch-logreg.html"><a href="ch-logreg.html#case-studies-overview-1"><i class="fa fa-check"></i><b>6.3</b> Case Studies Overview</a></li>
-<li class="chapter" data-level="6.4" data-path="ch-logreg.html"><a href="ch-logreg.html#case-study-soccer-goalkeepers"><i class="fa fa-check"></i><b>6.4</b> Case Study: Soccer Goalkeepers</a><ul>
+<li class="chapter" data-level="6.4" data-path="ch-logreg.html"><a href="ch-logreg.html#case-study-soccer-goalkeepers"><i class="fa fa-check"></i><b>6.4</b> Case Study: Soccer Goalkeepers</a>
+<ul>
 <li class="chapter" data-level="6.4.1" data-path="ch-logreg.html"><a href="ch-logreg.html#modeling-odds"><i class="fa fa-check"></i><b>6.4.1</b> Modeling Odds</a></li>
 <li class="chapter" data-level="6.4.2" data-path="ch-logreg.html"><a href="ch-logreg.html#logistic-regression-models-for-binomial-responses"><i class="fa fa-check"></i><b>6.4.2</b> Logistic Regression Models for Binomial Responses</a></li>
 <li class="chapter" data-level="6.4.3" data-path="ch-logreg.html"><a href="ch-logreg.html#theoretical-rationale-optional"><i class="fa fa-check"></i><b>6.4.3</b> Theoretical Rationale (optional)</a></li>
 </ul></li>
-<li class="chapter" data-level="6.5" data-path="ch-logreg.html"><a href="ch-logreg.html#case-study-reconstructing-alabama"><i class="fa fa-check"></i><b>6.5</b> Case Study: Reconstructing Alabama</a><ul>
+<li class="chapter" data-level="6.5" data-path="ch-logreg.html"><a href="ch-logreg.html#case-study-reconstructing-alabama"><i class="fa fa-check"></i><b>6.5</b> Case Study: Reconstructing Alabama</a>
+<ul>
 <li class="chapter" data-level="6.5.1" data-path="ch-logreg.html"><a href="ch-logreg.html#data-organization-3"><i class="fa fa-check"></i><b>6.5.1</b> Data Organization</a></li>
 <li class="chapter" data-level="6.5.2" data-path="ch-logreg.html"><a href="ch-logreg.html#exploratory-analyses"><i class="fa fa-check"></i><b>6.5.2</b> Exploratory Analyses</a></li>
 <li class="chapter" data-level="6.5.3" data-path="ch-logreg.html"><a href="ch-logreg.html#initial-models-1"><i class="fa fa-check"></i><b>6.5.3</b> Initial Models</a></li>
@@ -320,21 +384,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.5.8" data-path="ch-logreg.html"><a href="ch-logreg.html#sec-logOverdispersion"><i class="fa fa-check"></i><b>6.5.8</b> Overdispersion</a></li>
 <li class="chapter" data-level="6.5.9" data-path="ch-logreg.html"><a href="ch-logreg.html#summary-1"><i class="fa fa-check"></i><b>6.5.9</b> Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="6.6" data-path="ch-logreg.html"><a href="ch-logreg.html#linear-least-squares-vs.-binomial-regression"><i class="fa fa-check"></i><b>6.6</b> Linear Least Squares  vs. Binomial Regression </a></li>
-<li class="chapter" data-level="6.7" data-path="ch-logreg.html"><a href="ch-logreg.html#case-study-trying-to-lose-weight"><i class="fa fa-check"></i><b>6.7</b> Case Study: Trying to Lose Weight</a><ul>
+<li class="chapter" data-level="6.6" data-path="ch-logreg.html"><a href="ch-logreg.html#linear-least-squares-vs.-binomial-regression"><i class="fa fa-check"></i><b>6.6</b> Linear Least Squares vs. Binomial Regression </a></li>
+<li class="chapter" data-level="6.7" data-path="ch-logreg.html"><a href="ch-logreg.html#case-study-trying-to-lose-weight"><i class="fa fa-check"></i><b>6.7</b> Case Study: Trying to Lose Weight</a>
+<ul>
 <li class="chapter" data-level="6.7.1" data-path="ch-logreg.html"><a href="ch-logreg.html#data-organization-4"><i class="fa fa-check"></i><b>6.7.1</b> Data Organization</a></li>
 <li class="chapter" data-level="6.7.2" data-path="ch-logreg.html"><a href="ch-logreg.html#exploratory-data-analysis-2"><i class="fa fa-check"></i><b>6.7.2</b> Exploratory Data Analysis</a></li>
 <li class="chapter" data-level="6.7.3" data-path="ch-logreg.html"><a href="ch-logreg.html#initial-models-2"><i class="fa fa-check"></i><b>6.7.3</b> Initial Models</a></li>
 <li class="chapter" data-level="6.7.4" data-path="ch-logreg.html"><a href="ch-logreg.html#drop-in-deviance-tests"><i class="fa fa-check"></i><b>6.7.4</b> Drop-in-Deviance Tests</a></li>
 <li class="chapter" data-level="6.7.5" data-path="ch-logreg.html"><a href="ch-logreg.html#model-discussion-and-summary"><i class="fa fa-check"></i><b>6.7.5</b> Model Discussion and Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="6.8" data-path="ch-logreg.html"><a href="ch-logreg.html#exercises-5"><i class="fa fa-check"></i><b>6.8</b> Exercises</a><ul>
+<li class="chapter" data-level="6.8" data-path="ch-logreg.html"><a href="ch-logreg.html#exercises-5"><i class="fa fa-check"></i><b>6.8</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="6.8.1" data-path="ch-logreg.html"><a href="ch-logreg.html#conceptual-exercises-3"><i class="fa fa-check"></i><b>6.8.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="6.8.2" data-path="ch-logreg.html"><a href="ch-logreg.html#guided-exercises-4"><i class="fa fa-check"></i><b>6.8.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="6.8.3" data-path="ch-logreg.html"><a href="ch-logreg.html#open-ended-exercises-3"><i class="fa fa-check"></i><b>6.8.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="ch-corrdata.html"><a href="ch-corrdata.html"><i class="fa fa-check"></i><b>7</b> Correlated Data</a><ul>
+<li class="chapter" data-level="7" data-path="ch-corrdata.html"><a href="ch-corrdata.html"><i class="fa fa-check"></i><b>7</b> Correlated Data</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="ch-corrdata.html"><a href="ch-corrdata.html#learning-objectives-6"><i class="fa fa-check"></i><b>7.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="7.2" data-path="ch-corrdata.html"><a href="ch-corrdata.html#introduction-1"><i class="fa fa-check"></i><b>7.2</b> Introduction</a></li>
 <li class="chapter" data-level="7.3" data-path="ch-corrdata.html"><a href="ch-corrdata.html#recognizing-correlation"><i class="fa fa-check"></i><b>7.3</b> Recognizing Correlation</a></li>
@@ -342,47 +409,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.5" data-path="ch-corrdata.html"><a href="ch-corrdata.html#sources-of-variability"><i class="fa fa-check"></i><b>7.5</b> Sources of Variability</a></li>
 <li class="chapter" data-level="7.6" data-path="ch-corrdata.html"><a href="ch-corrdata.html#scenario-1-no-covariates"><i class="fa fa-check"></i><b>7.6</b> Scenario 1: No Covariates</a></li>
 <li class="chapter" data-level="7.7" data-path="ch-corrdata.html"><a href="ch-corrdata.html#scenario-2-dose-effect"><i class="fa fa-check"></i><b>7.7</b> Scenario 2: Dose Effect</a></li>
-<li class="chapter" data-level="7.8" data-path="ch-corrdata.html"><a href="ch-corrdata.html#case-study-tree-growth"><i class="fa fa-check"></i><b>7.8</b> Case Study: Tree Growth</a><ul>
+<li class="chapter" data-level="7.8" data-path="ch-corrdata.html"><a href="ch-corrdata.html#case-study-tree-growth"><i class="fa fa-check"></i><b>7.8</b> Case Study: Tree Growth</a>
+<ul>
 <li class="chapter" data-level="7.8.1" data-path="ch-corrdata.html"><a href="ch-corrdata.html#format-of-the-data-set"><i class="fa fa-check"></i><b>7.8.1</b> Format of the Data Set</a></li>
 <li class="chapter" data-level="7.8.2" data-path="ch-corrdata.html"><a href="ch-corrdata.html#sources-of-variability-1"><i class="fa fa-check"></i><b>7.8.2</b> Sources of Variability</a></li>
 <li class="chapter" data-level="7.8.3" data-path="ch-corrdata.html"><a href="ch-corrdata.html#analysis-preview-accounting-for-correlation"><i class="fa fa-check"></i><b>7.8.3</b> Analysis Preview: Accounting for Correlation</a></li>
 </ul></li>
 <li class="chapter" data-level="7.9" data-path="ch-corrdata.html"><a href="ch-corrdata.html#summary-2"><i class="fa fa-check"></i><b>7.9</b> Summary</a></li>
-<li class="chapter" data-level="7.10" data-path="ch-corrdata.html"><a href="ch-corrdata.html#exercises-6"><i class="fa fa-check"></i><b>7.10</b> Exercises</a><ul>
+<li class="chapter" data-level="7.10" data-path="ch-corrdata.html"><a href="ch-corrdata.html#exercises-6"><i class="fa fa-check"></i><b>7.10</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="7.10.1" data-path="ch-corrdata.html"><a href="ch-corrdata.html#conceptual-exercises-4"><i class="fa fa-check"></i><b>7.10.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="7.10.2" data-path="ch-corrdata.html"><a href="ch-corrdata.html#guided-exercises-5"><i class="fa fa-check"></i><b>7.10.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="7.10.3" data-path="ch-corrdata.html"><a href="ch-corrdata.html#note-on-correlated-binary-outcomes"><i class="fa fa-check"></i><b>7.10.3</b> Note on Correlated Binary Outcomes</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html"><i class="fa fa-check"></i><b>8</b> Introduction to Multilevel Models</a><ul>
+<li class="chapter" data-level="8" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html"><i class="fa fa-check"></i><b>8</b> Introduction to Multilevel Models</a>
+<ul>
 <li class="chapter" data-level="8.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#learning-objectives-7"><i class="fa fa-check"></i><b>8.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="8.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#cs:music"><i class="fa fa-check"></i><b>8.2</b> Case Study: Music Performance Anxiety</a></li>
-<li class="chapter" data-level="8.3" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#explore"><i class="fa fa-check"></i><b>8.3</b> Initial Exploratory Analyses</a><ul>
+<li class="chapter" data-level="8.3" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#explore"><i class="fa fa-check"></i><b>8.3</b> Initial Exploratory Analyses</a>
+<ul>
 <li class="chapter" data-level="8.3.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#organizedata1"><i class="fa fa-check"></i><b>8.3.1</b> Data Organization</a></li>
 <li class="chapter" data-level="8.3.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#explore1"><i class="fa fa-check"></i><b>8.3.2</b> Exploratory Analyses: Univariate Summaries</a></li>
 <li class="chapter" data-level="8.3.3" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#explore2"><i class="fa fa-check"></i><b>8.3.3</b> Exploratory Analyses: Bivariate Summaries</a></li>
 </ul></li>
-<li class="chapter" data-level="8.4" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#twolevelmodeling"><i class="fa fa-check"></i><b>8.4</b> Two-Level Modeling: Preliminary Considerations</a><ul>
+<li class="chapter" data-level="8.4" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#twolevelmodeling"><i class="fa fa-check"></i><b>8.4</b> Two-Level Modeling: Preliminary Considerations</a>
+<ul>
 <li class="chapter" data-level="8.4.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#multregr"><i class="fa fa-check"></i><b>8.4.1</b> Ignoring the Two-Level Structure (not recommended)</a></li>
 <li class="chapter" data-level="8.4.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#twostage"><i class="fa fa-check"></i><b>8.4.2</b> A Two-Stage Modeling Approach (better but imperfect)</a></li>
 </ul></li>
-<li class="chapter" data-level="8.5" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#twolevelmodelingunified"><i class="fa fa-check"></i><b>8.5</b> Two-Level Modeling: A Unified Approach</a><ul>
+<li class="chapter" data-level="8.5" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#twolevelmodelingunified"><i class="fa fa-check"></i><b>8.5</b> Two-Level Modeling: A Unified Approach</a>
+<ul>
 <li class="chapter" data-level="8.5.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#ourframework"><i class="fa fa-check"></i><b>8.5.1</b> Our Framework</a></li>
 <li class="chapter" data-level="8.5.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#random-vs.-fixed-effects"><i class="fa fa-check"></i><b>8.5.2</b> Random vs. Fixed Effects</a></li>
 <li class="chapter" data-level="8.5.3" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#MVN"><i class="fa fa-check"></i><b>8.5.3</b> Distribution of Errors: Multivariate Normal</a></li>
 <li class="chapter" data-level="8.5.4" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#multileveltechnical"><i class="fa fa-check"></i><b>8.5.4</b> Technical Issues when Testing Parameters (optional)</a></li>
 <li class="chapter" data-level="8.5.5" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#initialmodel"><i class="fa fa-check"></i><b>8.5.5</b> An Initial Model with Parameter Interpretations</a></li>
 </ul></li>
-<li class="chapter" data-level="8.6" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#sec:buildmodel"><i class="fa fa-check"></i><b>8.6</b> Building a Multilevel Model</a><ul>
+<li class="chapter" data-level="8.6" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#sec:buildmodel"><i class="fa fa-check"></i><b>8.6</b> Building a Multilevel Model</a>
+<ul>
 <li class="chapter" data-level="8.6.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#buildstrategy"><i class="fa fa-check"></i><b>8.6.1</b> Model Building Strategy</a></li>
 <li class="chapter" data-level="8.6.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#modela8"><i class="fa fa-check"></i><b>8.6.2</b> An Initial Model: Random Intercepts</a></li>
 </ul></li>
-<li class="chapter" data-level="8.7" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#modelb"><i class="fa fa-check"></i><b>8.7</b> Binary Covariates at Level One and Level Two</a><ul>
+<li class="chapter" data-level="8.7" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#modelb"><i class="fa fa-check"></i><b>8.7</b> Binary Covariates at Level One and Level Two</a>
+<ul>
 <li class="chapter" data-level="8.7.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#randomslopeandint"><i class="fa fa-check"></i><b>8.7.1</b> Random Slopes and Intercepts Model</a></li>
 <li class="chapter" data-level="8.7.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#pseudoR2"><i class="fa fa-check"></i><b>8.7.2</b> Pseudo R-squared Values</a></li>
 <li class="chapter" data-level="8.7.3" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#modelc"><i class="fa fa-check"></i><b>8.7.3</b> Adding a Covariate at Level Two</a></li>
 </ul></li>
-<li class="chapter" data-level="8.8" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#sec:modeld"><i class="fa fa-check"></i><b>8.8</b> Adding Further Covariates</a><ul>
+<li class="chapter" data-level="8.8" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#sec:modeld"><i class="fa fa-check"></i><b>8.8</b> Adding Further Covariates</a>
+<ul>
 <li class="chapter" data-level="8.8.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#interp:modeld"><i class="fa fa-check"></i><b>8.8.1</b> Interpretation of Parameter Estimates</a></li>
 <li class="chapter" data-level="8.8.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#compare:modeld"><i class="fa fa-check"></i><b>8.8.2</b> Model Comparisons</a></li>
 </ul></li>
@@ -390,38 +466,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.10" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#modelf"><i class="fa fa-check"></i><b>8.10</b> A Final Model for Music Performance Anxiety</a></li>
 <li class="chapter" data-level="8.11" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#multinecessary"><i class="fa fa-check"></i><b>8.11</b> Modeling Multilevel Structure: Is It Necessary?</a></li>
 <li class="chapter" data-level="8.12" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#notesr8"><i class="fa fa-check"></i><b>8.12</b> Notes on Using R (optional)</a></li>
-<li class="chapter" data-level="8.13" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#exercises-7"><i class="fa fa-check"></i><b>8.13</b> Exercises</a><ul>
+<li class="chapter" data-level="8.13" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#exercises-7"><i class="fa fa-check"></i><b>8.13</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="8.13.1" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#conceptual-exercises-5"><i class="fa fa-check"></i><b>8.13.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="8.13.2" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#guided-exercises-6"><i class="fa fa-check"></i><b>8.13.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="8.13.3" data-path="ch-multilevelintro.html"><a href="ch-multilevelintro.html#open-ended-exercises-4"><i class="fa fa-check"></i><b>8.13.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="ch-lon.html"><a href="ch-lon.html"><i class="fa fa-check"></i><b>9</b> Two-Level Longitudinal Data</a><ul>
+<li class="chapter" data-level="9" data-path="ch-lon.html"><a href="ch-lon.html"><i class="fa fa-check"></i><b>9</b> Two-Level Longitudinal Data</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="ch-lon.html"><a href="ch-lon.html#learning-objectives-8"><i class="fa fa-check"></i><b>9.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="9.2" data-path="ch-lon.html"><a href="ch-lon.html#cs:charter"><i class="fa fa-check"></i><b>9.2</b> Case Study: Charter Schools</a></li>
-<li class="chapter" data-level="9.3" data-path="ch-lon.html"><a href="ch-lon.html#exploratoryanalysis"><i class="fa fa-check"></i><b>9.3</b> Initial Exploratory Analyses</a><ul>
+<li class="chapter" data-level="9.3" data-path="ch-lon.html"><a href="ch-lon.html#exploratoryanalysis"><i class="fa fa-check"></i><b>9.3</b> Initial Exploratory Analyses</a>
+<ul>
 <li class="chapter" data-level="9.3.1" data-path="ch-lon.html"><a href="ch-lon.html#data"><i class="fa fa-check"></i><b>9.3.1</b> Data Organization</a></li>
 <li class="chapter" data-level="9.3.2" data-path="ch-lon.html"><a href="ch-lon.html#missing"><i class="fa fa-check"></i><b>9.3.2</b> Missing Data</a></li>
 <li class="chapter" data-level="9.3.3" data-path="ch-lon.html"><a href="ch-lon.html#generalanalyses"><i class="fa fa-check"></i><b>9.3.3</b> Exploratory Analyses for General Multilevel Models</a></li>
 <li class="chapter" data-level="9.3.4" data-path="ch-lon.html"><a href="ch-lon.html#longitudinalanalyses"><i class="fa fa-check"></i><b>9.3.4</b> Exploratory Analyses for Longitudinal Data</a></li>
 </ul></li>
-<li class="chapter" data-level="9.4" data-path="ch-lon.html"><a href="ch-lon.html#twostage9"><i class="fa fa-check"></i><b>9.4</b> Preliminary Two-Stage Modeling</a><ul>
+<li class="chapter" data-level="9.4" data-path="ch-lon.html"><a href="ch-lon.html#twostage9"><i class="fa fa-check"></i><b>9.4</b> Preliminary Two-Stage Modeling</a>
+<ul>
 <li class="chapter" data-level="9.4.1" data-path="ch-lon.html"><a href="ch-lon.html#lineartwostage"><i class="fa fa-check"></i><b>9.4.1</b> Linear Trends Within Schools</a></li>
 <li class="chapter" data-level="9.4.2" data-path="ch-lon.html"><a href="ch-lon.html#lineartwostageL2effects"><i class="fa fa-check"></i><b>9.4.2</b> Effects of Level Two Covariates on Linear Time Trends</a></li>
 <li class="chapter" data-level="9.4.3" data-path="ch-lon.html"><a href="ch-lon.html#lineartwostageerror2"><i class="fa fa-check"></i><b>9.4.3</b> Error Structure Within Schools</a></li>
 </ul></li>
-<li class="chapter" data-level="9.5" data-path="ch-lon.html"><a href="ch-lon.html#lineartwostageerror"><i class="fa fa-check"></i><b>9.5</b> Initial Models</a><ul>
+<li class="chapter" data-level="9.5" data-path="ch-lon.html"><a href="ch-lon.html#lineartwostageerror"><i class="fa fa-check"></i><b>9.5</b> Initial Models</a>
+<ul>
 <li class="chapter" data-level="9.5.1" data-path="ch-lon.html"><a href="ch-lon.html#modela"><i class="fa fa-check"></i><b>9.5.1</b> Unconditional Means Model</a></li>
 <li class="chapter" data-level="9.5.2" data-path="ch-lon.html"><a href="ch-lon.html#modelb9"><i class="fa fa-check"></i><b>9.5.2</b> Unconditional Growth Model</a></li>
 <li class="chapter" data-level="9.5.3" data-path="ch-lon.html"><a href="ch-lon.html#othertimetrends"><i class="fa fa-check"></i><b>9.5.3</b> Modeling Other Trends over Time</a></li>
 </ul></li>
-<li class="chapter" data-level="9.6" data-path="ch-lon.html"><a href="ch-lon.html#finalmodel"><i class="fa fa-check"></i><b>9.6</b> Building to a Final Model</a><ul>
+<li class="chapter" data-level="9.6" data-path="ch-lon.html"><a href="ch-lon.html#finalmodel"><i class="fa fa-check"></i><b>9.6</b> Building to a Final Model</a>
+<ul>
 <li class="chapter" data-level="9.6.1" data-path="ch-lon.html"><a href="ch-lon.html#sec:modelc9"><i class="fa fa-check"></i><b>9.6.1</b> Uncontrolled Effects of School Type</a></li>
 <li class="chapter" data-level="9.6.2" data-path="ch-lon.html"><a href="ch-lon.html#modeld"><i class="fa fa-check"></i><b>9.6.2</b> Add Percent Free and Reduced Lunch as a Covariate</a></li>
 <li class="chapter" data-level="9.6.3" data-path="ch-lon.html"><a href="ch-lon.html#modelf9"><i class="fa fa-check"></i><b>9.6.3</b> A Final Model with Three Level Two Covariates</a></li>
 <li class="chapter" data-level="9.6.4" data-path="ch-lon.html"><a href="ch-lon.html#longitudinal-paraboot"><i class="fa fa-check"></i><b>9.6.4</b> Parametric Bootstrap Testing</a></li>
 </ul></li>
-<li class="chapter" data-level="9.7" data-path="ch-lon.html"><a href="ch-lon.html#errorcovariance"><i class="fa fa-check"></i><b>9.7</b> Covariance Structure among Observations</a><ul>
+<li class="chapter" data-level="9.7" data-path="ch-lon.html"><a href="ch-lon.html#errorcovariance"><i class="fa fa-check"></i><b>9.7</b> Covariance Structure among Observations</a>
+<ul>
 <li class="chapter" data-level="9.7.1" data-path="ch-lon.html"><a href="ch-lon.html#standarderror"><i class="fa fa-check"></i><b>9.7.1</b> Standard Covariance Structure</a></li>
 <li class="chapter" data-level="9.7.2" data-path="ch-lon.html"><a href="ch-lon.html#alternateerror"><i class="fa fa-check"></i><b>9.7.2</b> Alternative Covariance Structures</a></li>
 <li class="chapter" data-level="9.7.3" data-path="ch-lon.html"><a href="ch-lon.html#non-longitudinal-multilevel-models"><i class="fa fa-check"></i><b>9.7.3</b> Non-longitudinal Multilevel Models</a></li>
@@ -429,20 +512,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.7.5" data-path="ch-lon.html"><a href="ch-lon.html#optionalcov"><i class="fa fa-check"></i><b>9.7.5</b> Details of Covariance Structures (optional)</a></li>
 </ul></li>
 <li class="chapter" data-level="9.8" data-path="ch-lon.html"><a href="ch-lon.html#notesr9"><i class="fa fa-check"></i><b>9.8</b> Notes on Using R (optional)</a></li>
-<li class="chapter" data-level="9.9" data-path="ch-lon.html"><a href="ch-lon.html#exercises-8"><i class="fa fa-check"></i><b>9.9</b> Exercises</a><ul>
+<li class="chapter" data-level="9.9" data-path="ch-lon.html"><a href="ch-lon.html#exercises-8"><i class="fa fa-check"></i><b>9.9</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="9.9.1" data-path="ch-lon.html"><a href="ch-lon.html#conceptual-exercises-6"><i class="fa fa-check"></i><b>9.9.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="9.9.2" data-path="ch-lon.html"><a href="ch-lon.html#guided-exercises-7"><i class="fa fa-check"></i><b>9.9.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="9.9.3" data-path="ch-lon.html"><a href="ch-lon.html#open-ended-exercises-5"><i class="fa fa-check"></i><b>9.9.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="ch-3level.html"><a href="ch-3level.html"><i class="fa fa-check"></i><b>10</b> Multilevel Data With More Than Two Levels</a><ul>
+<li class="chapter" data-level="10" data-path="ch-3level.html"><a href="ch-3level.html"><i class="fa fa-check"></i><b>10</b> Multilevel Data With More Than Two Levels</a>
+<ul>
 <li class="chapter" data-level="10.1" data-path="ch-3level.html"><a href="ch-3level.html#learning-objectives-9"><i class="fa fa-check"></i><b>10.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="10.2" data-path="ch-3level.html"><a href="ch-3level.html#cs:seeds"><i class="fa fa-check"></i><b>10.2</b> Case Studies: Seed Germination</a></li>
-<li class="chapter" data-level="10.3" data-path="ch-3level.html"><a href="ch-3level.html#explore3"><i class="fa fa-check"></i><b>10.3</b> Initial Exploratory Analyses</a><ul>
+<li class="chapter" data-level="10.3" data-path="ch-3level.html"><a href="ch-3level.html#explore3"><i class="fa fa-check"></i><b>10.3</b> Initial Exploratory Analyses</a>
+<ul>
 <li class="chapter" data-level="10.3.1" data-path="ch-3level.html"><a href="ch-3level.html#organizedata3"><i class="fa fa-check"></i><b>10.3.1</b> Data Organization</a></li>
 <li class="chapter" data-level="10.3.2" data-path="ch-3level.html"><a href="ch-3level.html#explore3v2"><i class="fa fa-check"></i><b>10.3.2</b> Exploratory Analyses</a></li>
 </ul></li>
-<li class="chapter" data-level="10.4" data-path="ch-3level.html"><a href="ch-3level.html#initialmodels-3level"><i class="fa fa-check"></i><b>10.4</b> Initial Models</a><ul>
+<li class="chapter" data-level="10.4" data-path="ch-3level.html"><a href="ch-3level.html#initialmodels-3level"><i class="fa fa-check"></i><b>10.4</b> Initial Models</a>
+<ul>
 <li class="chapter" data-level="10.4.1" data-path="ch-3level.html"><a href="ch-3level.html#unconditional-means"><i class="fa fa-check"></i><b>10.4.1</b> Unconditional Means</a></li>
 <li class="chapter" data-level="10.4.2" data-path="ch-3level.html"><a href="ch-3level.html#unconditional-growth"><i class="fa fa-check"></i><b>10.4.2</b> Unconditional Growth</a></li>
 </ul></li>
@@ -450,24 +537,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.6" data-path="ch-3level.html"><a href="ch-3level.html#threelevel-paraboot"><i class="fa fa-check"></i><b>10.6</b> Parametric Bootstrap Testing</a></li>
 <li class="chapter" data-level="10.7" data-path="ch-3level.html"><a href="ch-3level.html#sec:explodingvarcomps"><i class="fa fa-check"></i><b>10.7</b> Exploding Variance Components</a></li>
 <li class="chapter" data-level="10.8" data-path="ch-3level.html"><a href="ch-3level.html#modelsDEF"><i class="fa fa-check"></i><b>10.8</b> Building to a Final Model</a></li>
-<li class="chapter" data-level="10.9" data-path="ch-3level.html"><a href="ch-3level.html#error-3level"><i class="fa fa-check"></i><b>10.9</b> Covariance Structure (optional)</a><ul>
+<li class="chapter" data-level="10.9" data-path="ch-3level.html"><a href="ch-3level.html#error-3level"><i class="fa fa-check"></i><b>10.9</b> Covariance Structure (optional)</a>
+<ul>
 <li class="chapter" data-level="10.9.1" data-path="ch-3level.html"><a href="ch-3level.html#optionalerror"><i class="fa fa-check"></i><b>10.9.1</b> Details of Covariance Structures</a></li>
 </ul></li>
 <li class="chapter" data-level="10.10" data-path="ch-3level.html"><a href="ch-3level.html#usingR3"><i class="fa fa-check"></i><b>10.10</b> Notes on Using R (optional)</a></li>
-<li class="chapter" data-level="10.11" data-path="ch-3level.html"><a href="ch-3level.html#exercises-9"><i class="fa fa-check"></i><b>10.11</b> Exercises</a><ul>
+<li class="chapter" data-level="10.11" data-path="ch-3level.html"><a href="ch-3level.html#exercises-9"><i class="fa fa-check"></i><b>10.11</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="10.11.1" data-path="ch-3level.html"><a href="ch-3level.html#conceptual-exercises-7"><i class="fa fa-check"></i><b>10.11.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="10.11.2" data-path="ch-3level.html"><a href="ch-3level.html#guided-exercises-8"><i class="fa fa-check"></i><b>10.11.2</b> Guided Exercises</a></li>
 <li class="chapter" data-level="10.11.3" data-path="ch-3level.html"><a href="ch-3level.html#open-ended-exercises-6"><i class="fa fa-check"></i><b>10.11.3</b> Open-Ended Exercises</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="ch-GLMM.html"><a href="ch-GLMM.html"><i class="fa fa-check"></i><b>11</b> Multilevel Generalized Linear Models</a><ul>
+<li class="chapter" data-level="11" data-path="ch-GLMM.html"><a href="ch-GLMM.html"><i class="fa fa-check"></i><b>11</b> Multilevel Generalized Linear Models</a>
+<ul>
 <li class="chapter" data-level="11.1" data-path="ch-GLMM.html"><a href="ch-GLMM.html#objectives"><i class="fa fa-check"></i><b>11.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="11.2" data-path="ch-GLMM.html"><a href="ch-GLMM.html#cs:refs"><i class="fa fa-check"></i><b>11.2</b> Case Study: College Basketball Referees</a></li>
-<li class="chapter" data-level="11.3" data-path="ch-GLMM.html"><a href="ch-GLMM.html#explore-glmm"><i class="fa fa-check"></i><b>11.3</b> Initial Exploratory Analyses</a><ul>
+<li class="chapter" data-level="11.3" data-path="ch-GLMM.html"><a href="ch-GLMM.html#explore-glmm"><i class="fa fa-check"></i><b>11.3</b> Initial Exploratory Analyses</a>
+<ul>
 <li class="chapter" data-level="11.3.1" data-path="ch-GLMM.html"><a href="ch-GLMM.html#data-organization-5"><i class="fa fa-check"></i><b>11.3.1</b> Data Organization</a></li>
 <li class="chapter" data-level="11.3.2" data-path="ch-GLMM.html"><a href="ch-GLMM.html#glmm-eda"><i class="fa fa-check"></i><b>11.3.2</b> Exploratory Analyses</a></li>
 </ul></li>
-<li class="chapter" data-level="11.4" data-path="ch-GLMM.html"><a href="ch-GLMM.html#twolevelmodeling-glmm"><i class="fa fa-check"></i><b>11.4</b> Two-Level Modeling with a Generalized Response</a><ul>
+<li class="chapter" data-level="11.4" data-path="ch-GLMM.html"><a href="ch-GLMM.html#twolevelmodeling-glmm"><i class="fa fa-check"></i><b>11.4</b> Two-Level Modeling with a Generalized Response</a>
+<ul>
 <li class="chapter" data-level="11.4.1" data-path="ch-GLMM.html"><a href="ch-GLMM.html#multregr-glmm"><i class="fa fa-check"></i><b>11.4.1</b> A GLM Approach</a></li>
 <li class="chapter" data-level="11.4.2" data-path="ch-GLMM.html"><a href="ch-GLMM.html#twostage-glmm"><i class="fa fa-check"></i><b>11.4.2</b> A Two-Stage Modeling Approach</a></li>
 <li class="chapter" data-level="11.4.3" data-path="ch-GLMM.html"><a href="ch-GLMM.html#unified-glmm"><i class="fa fa-check"></i><b>11.4.3</b> A Unified Multilevel Approach</a></li>
@@ -477,7 +569,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.7" data-path="ch-GLMM.html"><a href="ch-GLMM.html#sec:finalmodel-glmm"><i class="fa fa-check"></i><b>11.7</b> A Final Model for Examining Referee Bias</a></li>
 <li class="chapter" data-level="11.8" data-path="ch-GLMM.html"><a href="ch-GLMM.html#estimatedRE"><i class="fa fa-check"></i><b>11.8</b> Estimated Random Effects</a></li>
 <li class="chapter" data-level="11.9" data-path="ch-GLMM.html"><a href="ch-GLMM.html#usingR-glmm"><i class="fa fa-check"></i><b>11.9</b> Notes on Using R (optional)</a></li>
-<li class="chapter" data-level="11.10" data-path="ch-GLMM.html"><a href="ch-GLMM.html#exercises-10"><i class="fa fa-check"></i><b>11.10</b> Exercises</a><ul>
+<li class="chapter" data-level="11.10" data-path="ch-GLMM.html"><a href="ch-GLMM.html#exercises-10"><i class="fa fa-check"></i><b>11.10</b> Exercises</a>
+<ul>
 <li class="chapter" data-level="11.10.1" data-path="ch-GLMM.html"><a href="ch-GLMM.html#conceptual-exercises-8"><i class="fa fa-check"></i><b>11.10.1</b> Conceptual Exercises</a></li>
 <li class="chapter" data-level="11.10.2" data-path="ch-GLMM.html"><a href="ch-GLMM.html#open-ended-exercises-7"><i class="fa fa-check"></i><b>11.10.2</b> Open-Ended Exercises</a></li>
 </ul></li>
@@ -495,7 +588,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Beyond Multiple Linear Regression</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Chapter 11</a>
           </h1>
         </div>
 
@@ -504,18 +597,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Beyond Multiple Linear Regression</h1>
-<h2 class="subtitle"><em>Applied Generalized Linear Models and Multilevel Models in R</em></h2>
+<h1 class="title">Chapter 11</h1>
+<h2 class="subtitle"><em>Multilevel Generalized Linear Models</em></h2>
 <p class="author"><em>Paul Roback and Julie Legler</em></p>
-<p class="date"><em>January 26, 2021</em></p>
+<p class="date"><em>October 19, 2024</em></p>
 </div>
-<div id="preface" class="section level1 unnumbered">
-<h1>Preface</h1>
+<div id="preface" class="section level1 unnumbered hasAnchor">
+<h1>Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Welcome! This is the <a href="https://bookdown.org/roback/bookdown-BeyondMLR/">online version</a> of <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em>. Hard copies can be purchased through <a href="https://www.routledge.com/Beyond-Multiple-Linear-Regression-Applied-Generalized-Linear-Models-And/Roback-Legler/p/book/9781439885383">CRC Press</a> or on <a href="https://www.amazon.com/Generalized-Correlated-Methods-Chapman-Statistical/dp/1439885389">Amazon</a>.</p>
 <p><img src="data/book_cover.jpg" width="50%" /></p>
-<div id="description" class="section level2 unnumbered">
-<h2>Description</h2>
-<p><strong>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</strong> <span class="citation">(R Core Team <a href="#ref-RProject" role="doc-biblioref">2020</a>)</span> is intended to be accessible to undergraduate students who have successfully completed a regression course through, for example, a textbook like <em>Stat2</em> <span class="citation">(Cannon et al. <a href="#ref-Cannon2019" role="doc-biblioref">2019</a>)</span>. We started teaching this course at St. Olaf College in 2003 so students would be able to deal with the non-normal, correlated world we live in. It has been offered at St. Olaf every year since. Even though there is no mathematical prerequisite, we still introduce fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping in an intuitive and applied manner. We believe strongly in case studies featuring real data and real research questions; thus, most of the data in the textbook (and <a href="https://github.com/proback/BeyondMLR">available at our GitHub repo</a>) arises from collaborative research conducted by the authors and their students, or from student projects. Our goal is that, after working through this material, students will develop an expanded toolkit and a greater appreciation for the wider world of data and statistical modeling.</p>
+<div id="description" class="section level2 unnumbered hasAnchor">
+<h2>Description<a href="index.html#description" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</strong> <span class="citation">(<a href="#ref-RProject">R Core Team 2020</a>)</span> is intended to be accessible to undergraduate students who have successfully completed a regression course through, for example, a textbook like <em>Stat2</em> <span class="citation">(<a href="#ref-Cannon2019">Cannon et al. 2019</a>)</span>. We started teaching this course at St. Olaf College in 2003 so students would be able to deal with the non-normal, correlated world we live in. It has been offered at St. Olaf every year since. Even though there is no mathematical prerequisite, we still introduce fairly sophisticated topics such as likelihood theory, zero-inflated Poisson, and parametric bootstrapping in an intuitive and applied manner. We believe strongly in case studies featuring real data and real research questions; thus, most of the data in the textbook (and <a href="https://github.com/proback/BeyondMLR">available at our GitHub repo</a>) arises from collaborative research conducted by the authors and their students, or from student projects. Our goal is that, after working through this material, students will develop an expanded toolkit and a greater appreciation for the wider world of data and statistical modeling.</p>
 <p>When we teach this course at St. Olaf, we are able to cover Chapters 1-11 during a single semester, although in order to make time for a large, open-ended group project we sometimes cover some chapters in less depth (e.g., Chapters 3, 7, 10, or 11). How much you cover will certainly depend on the background of your students (ours have seen both multiple linear and logistic regression), their sophistication level (we have statistical but no mathematical prerequisites), and time available (we have a 14-week semester). It will also depend on your choice of topics; in our experience, we have found that generalized linear models (GLMs) and multilevel models nicely build on students’ previous regression knowledge and allow them to better model data from many real contexts, but we also acknowledge that there are other good choices of topics for an applied “Stat3” course. The short chapter guide below can help you thread together the material in this book to create the perfect course for you:</p>
 <ul>
 <li>Chapter 1: Review of Multiple Linear Regression. We’ve found that our students really benefit from a review in the first week or so, plus in this initial chapter we introduce our approach to exploratory data analysis (EDA) and model building while reminding students about concepts like indicators, interactions, and bootstrapping.</li>
@@ -535,8 +628,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>© 2021 by Taylor &amp; Francis Group, LLC. Except as permitted under U.S. copyright law, no part of this book may be reprinted, reproduced, transmitted, or utilized in any form by an electronic, mechanical, or other means, now known or hereafter invented, including photocopying, microfilming, and recording, or in any information storage or retrieval system, without written permission from the publishers.</p>
 <p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
 </div>
-<div id="about-the-authors" class="section level2 unnumbered">
-<h2>About the Authors</h2>
+<div id="about-the-authors" class="section level2 unnumbered hasAnchor">
+<h2>About the Authors<a href="index.html#about-the-authors" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>Paul Roback</strong> is the Kenneth O. Bjork Distinguished Professor of Statistics and Data Science and <strong>Julie Legler</strong> is Professor Emeritus of Statistics at St. Olaf College in Northfield, MN. Both are Fellows of the American Statistical Association and are founders of the Center for Interdisciplinary Research at St. Olaf. Dr. Roback is the past Chair of the ASA Section on Statistical and Data Science Education, conducts applied research using multilevel modeling, text analysis, and Bayesian methods, and has been a statistical consultant in the pharmaceutical, health care, and food processing industries. Dr. Legler is past Chair of the ASA/MAA Joint Committee on Undergraduate Statistics, is a co-author of Stat2: Modelling with Regression and ANOVA, and was a biostatistician at the National Cancer Institute.</p>
 <p><strong>Dedication</strong></p>
 <blockquote>
@@ -550,10 +643,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p><strong>Acknowledgments.</strong> We would like to thank students of Stat 316 at St. Olaf College since 2010 for their patience as this book has taken shape with their feedback. We would especially like to thank these St. Olaf students for their summer research efforts which significantly improved aspects of this book: Cecilia Noecker, Anna Johanson, Nicole Bettes, Kiegan Rice, Anna Wall, Jack Wolf, Josh Pelayo, Spencer Eanes, and Emily Patterson. Early editions of this book also benefitted greatly from feedback from instructors who used these materials in their classes, including Matt Beckman, Laura Boehm Vock, Beth Chance, Laura Chihara, Mine Dogucu, and Katie Ziegler-Graham. Finally, we have appreciated the support of two NSF grants (#DMS-1045015 and #DMS-0354308) and of our colleagues in the Department of Mathematics, Statistics, and Computer Science at St. Olaf. We are also thankful to Samantha Roback for developing the cover image.</p>
 </div>
-<div id="versions-of-r-packages-used" class="section level2 unnumbered">
-<h2>Versions of R Packages Used</h2>
+<div id="versions-of-r-packages-used" class="section level2 unnumbered hasAnchor">
+<h2>Versions of R Packages Used<a href="index.html#versions-of-r-packages-used" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>If you are seeing different results than what is in the book, we recommend installing the exact version of the packages we used. This can be done by first installing the <code>remotes</code> package via <code>install.packages("remotes")</code>. Then, use <code>install_version()</code> replacing the <code>package</code> argument with the package name in quotes and the <code>version</code> argument with the particular version number to install. For example:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1"></a>remotes<span class="op">::</span><span class="kw">install_version</span>(<span class="dt">package =</span> <span class="st">&quot;broom&quot;</span>, <span class="dt">version =</span> <span class="st">&quot;0.5.6&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_version</span>(<span class="at">package =</span> <span class="st">&quot;broom&quot;</span>, <span class="at">version =</span> <span class="st">&quot;0.5.6&quot;</span>)</span></code></pre></div>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.2     
+## ── Conflicts ───────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter()     masks stats::filter()
+## ✖ dplyr::group_rows() masks kableExtra::group_rows()
+## ✖ dplyr::lag()        masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -568,42 +672,10 @@ Version used
 <tbody>
 <tr>
 <td style="text-align:left;">
-bookdown
-</td>
-<td style="text-align:left;">
-0.19
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-boot
-</td>
-<td style="text-align:left;">
-1.3-25
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-broom
-</td>
-<td style="text-align:left;">
-0.5.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-data.table
-</td>
-<td style="text-align:left;">
-1.12.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 dplyr
 </td>
 <td style="text-align:left;">
-1.0.0
+1.1.4
 </td>
 </tr>
 <tr>
@@ -611,39 +683,7 @@ dplyr
 forcats
 </td>
 <td style="text-align:left;">
-0.5.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Formula
-</td>
-<td style="text-align:left;">
-1.2-3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-GGally
-</td>
-<td style="text-align:left;">
-2.0.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ggformula
-</td>
-<td style="text-align:left;">
-0.9.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ggmosaic
-</td>
-<td style="text-align:left;">
-0.2.0
+1.0.0
 </td>
 </tr>
 <tr>
@@ -651,47 +691,7 @@ ggmosaic
 ggplot2
 </td>
 <td style="text-align:left;">
-3.3.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ggstance
-</td>
-<td style="text-align:left;">
-0.3.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-gridExtra
-</td>
-<td style="text-align:left;">
-2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Hmisc
-</td>
-<td style="text-align:left;">
-4.4-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ICC
-</td>
-<td style="text-align:left;">
-2.3.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-jtools
-</td>
-<td style="text-align:left;">
-2.0.5
+3.5.1
 </td>
 </tr>
 <tr>
@@ -699,7 +699,7 @@ jtools
 kableExtra
 </td>
 <td style="text-align:left;">
-1.1.0
+1.4.0
 </td>
 </tr>
 <tr>
@@ -707,111 +707,15 @@ kableExtra
 knitr
 </td>
 <td style="text-align:left;">
-1.28
+1.48
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-lattice
+lubridate
 </td>
 <td style="text-align:left;">
-0.20-41
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-lme4
-</td>
-<td style="text-align:left;">
-1.1-23
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-MASS
-</td>
-<td style="text-align:left;">
-7.3-51.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Matrix
-</td>
-<td style="text-align:left;">
-1.2-18
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mice
-</td>
-<td style="text-align:left;">
-3.9.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mnormt
-</td>
-<td style="text-align:left;">
-2.0.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mosaic
-</td>
-<td style="text-align:left;">
-1.7.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mosaicData
-</td>
-<td style="text-align:left;">
-0.18.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-multcomp
-</td>
-<td style="text-align:left;">
-1.4-13
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mvtnorm
-</td>
-<td style="text-align:left;">
-1.1-1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nlme
-</td>
-<td style="text-align:left;">
-3.1-148
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-pander
-</td>
-<td style="text-align:left;">
-0.6.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-pscl
-</td>
-<td style="text-align:left;">
-1.5.5
+1.9.3
 </td>
 </tr>
 <tr>
@@ -819,7 +723,7 @@ pscl
 purrr
 </td>
 <td style="text-align:left;">
-0.3.4
+1.0.2
 </td>
 </tr>
 <tr>
@@ -827,23 +731,7 @@ purrr
 readr
 </td>
 <td style="text-align:left;">
-1.3.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-reshape2
-</td>
-<td style="text-align:left;">
-1.4.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-rsample
-</td>
-<td style="text-align:left;">
-0.0.7
+2.1.5
 </td>
 </tr>
 <tr>
@@ -851,7 +739,7 @@ rsample
 sessioninfo
 </td>
 <td style="text-align:left;">
-1.1.1
+1.2.2
 </td>
 </tr>
 <tr>
@@ -859,23 +747,7 @@ sessioninfo
 stringr
 </td>
 <td style="text-align:left;">
-1.4.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-survival
-</td>
-<td style="text-align:left;">
-3.1-12
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-TH.data
-</td>
-<td style="text-align:left;">
-1.0-10
+1.5.1
 </td>
 </tr>
 <tr>
@@ -883,7 +755,7 @@ TH.data
 tibble
 </td>
 <td style="text-align:left;">
-3.0.1
+3.2.1
 </td>
 </tr>
 <tr>
@@ -891,7 +763,7 @@ tibble
 tidyr
 </td>
 <td style="text-align:left;">
-1.1.0
+1.3.1
 </td>
 </tr>
 <tr>
@@ -899,30 +771,21 @@ tidyr
 tidyverse
 </td>
 <td style="text-align:left;">
-1.3.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-xtable
-</td>
-<td style="text-align:left;">
-1.8-4
+2.0.0
 </td>
 </tr>
 </tbody>
 </table>
 
-
 </div>
 </div>
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-Cannon2019">
-<p>Cannon, Ann, George Cobb, Brad Hartlaub, Julie Legler, Robin Lock, Tom Moore, Allan Rossman, and Jeff Witmer. 2019. <em>Stat2: Modeling with Regression and Anova</em>. Macmillan.</p>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Cannon2019" class="csl-entry">
+Cannon, Ann, George Cobb, Brad Hartlaub, Julie Legler, Robin Lock, Tom Moore, Allan Rossman, and Jeff Witmer. 2019. <em>Stat2: Modeling with Regression and ANOVA</em>. Macmillan.
 </div>
-<div id="ref-RProject">
-<p>R Core Team. 2020. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org">https://www.R-project.org</a>.</p>
+<div id="ref-RProject" class="csl-entry">
+R Core Team. 2020. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org">https://www.R-project.org</a>.
 </div>
 </div>
             </section>
@@ -935,7 +798,6 @@ xtable
     </div>
   </div>
 <script src="libs/gitbook/js/app.min.js"></script>
-<script src="libs/gitbook/js/lunr.js"></script>
 <script src="libs/gitbook/js/clipboard.min.js"></script>
 <script src="libs/gitbook/js/plugin-search.js"></script>
 <script src="libs/gitbook/js/plugin-sharing.js"></script>
@@ -954,6 +816,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -973,7 +836,11 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["bookdown-BeyondMLR.pdf", "bookdown-BeyondMLR.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection",
 "scroll_highlight": true
@@ -988,7 +855,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

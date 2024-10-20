@@ -36,7 +36,6 @@ library(Hmisc)
 library(mice)
 library(lattice)
 library(nlme)
-library(reshape2)
 library(MASS)
 library(mnormt)
 library(lme4)
@@ -128,9 +127,8 @@ Now, we are ready to create our LONG data set. Fortunately, many packages (inclu
 #   chart.long is 1854x10 with 121 NAs for MathAvgScore
 select <- dplyr::select
 chart.long <- chart.wide |>
-  gather(key = "key", value = "MathAvgScore",
-         MathAvgScore.0:MathAvgScore.2) |>
-  separate(key, into = c("name", "year08"), sep = "\\.") |>
+  pivot_longer(MathAvgScore.0:MathAvgScore.2, names_to = "key", values_to = "MathAvgScore") |>
+  separate_wider_delim(key, names = c("name", "year08"), delim = ".") |>
   select(-c("...1", "name")) |>
   arrange(schoolid, year08) |>
   mutate(year08 = as.numeric(year08))
@@ -189,8 +187,8 @@ sampdata <- bind_rows(wide.charter, wide.public) |>
 head(sampdata)
 
 sampdata.l <- sampdata |>
-  gather(key = "key", value = "MathAvgScore", MathAvgScore.0:MathAvgScore.2) |>
-  separate(key, into = c("name", "year08"), sep = "\\.") |>
+  pivot_longer(MathAvgScore.0:MathAvgScore.2, names_to = "key", values_to = "MathAvgScore") |>
+  separate_wider_delim(key, names = c("name", "year08"), delim = ".") |>
   select(-name) |>
   arrange(charter, vars, year08) |>
   mutate(year08 = as.numeric(year08))
@@ -398,12 +396,12 @@ regressions <- regressions |>
 
 lm_info1 <- regressions |>
   select(schoolid, term, estimate) |>
-  spread(key = term, value = estimate) |>
+  pivot_wider(names_from = term, values_from = estimate) |>
   rename(rate = year08, int = `(Intercept)`)
 
 lm_info2 <- regressions |>
   select(schoolid, term, std.error) |>
-  spread(key = term, value = std.error) |>
+  pivot_wider(names_from = term, values_from = std.error) |>
   rename(se_rate = year08, se_int = `(Intercept)`)
 
 lm_info <- smallchart.long |>
@@ -456,12 +454,12 @@ regressions <- regressions |>
 
 lm_info1 <- regressions |>
   select(schoolid, term, estimate) |>
-  spread(key = term, value = estimate) |>
+  pivot_wider(names_from = term, values_from = estimate) |>
   rename(rate = year08, int = `(Intercept)`)
 
 lm_info2 <- regressions |>
   select(schoolid, term, std.error) |>
-  spread(key = term, value = std.error) |>
+  pivot_wider(names_from = term, values_from = std.error) |>
   rename(se_rate = year08, se_int = `(Intercept)`)
 
 lm_info <- chart.long |>
@@ -662,7 +660,7 @@ hgtwm <- score.nonm |>
   select(schoolid, lmres, year08) |>
   mutate(name = rep("lmres", n())) |>
   unite(newcol, name, year08, sep = ".") |>
-  spread(key = newcol, value = lmres)
+  pivot_wider(names_from = newcol, values_from = lmres)
 ```
 
 ```{r, lon-cor1, fig.align="center",out.width="60%",fig.cap='Correlation structure within school.  The upper right contains correlation coefficients between residuals at pairs of time points, the lower left contains scatterplots of the residuals at time point pairs, and the diagonal contains histograms of residuals at each of the three time points.',echo=FALSE, warning=FALSE, message=FALSE}
