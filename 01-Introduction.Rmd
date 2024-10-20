@@ -195,14 +195,14 @@ The first five and last five rows from our data set are illustrated in Table \@r
 
 ```{r introtable1,echo=FALSE, warning=FALSE}
 derby.df <- read.csv("data/derbyplus.csv")
-derby.df <- derby.df %>%
+derby.df <- derby.df |>
   mutate( fast = ifelse(condition=="fast",1,0), 
           good = ifelse(condition=="good",1,0),
           yearnew = year - 1896,
           fastfactor = ifelse(fast == 0, "not fast", "fast"))
-table1 <- derby.df %>%
+table1 <- derby.df |>
   filter(row_number() < 6 | row_number() > 117)
-kable(table1, booktabs=T,caption="The first five and the last five observations from the Kentucky Derby case study.") %>%
+kable(table1, booktabs=T,caption="The first five and the last five observations from the Kentucky Derby case study.") |>
   kable_styling(latex_options = "scale_down")
 ```
 
@@ -473,13 +473,13 @@ If we wish to use bootstrapping to obtain confidence intervals for our coefficie
 ```{r model4boot, comment=NA, message=FALSE}
 # updated code from tobiasgerstenberg on github
 set.seed(413)
-bootreg <- derby.df %>% 
-  bootstraps(1000) %>%
-  pull(splits) %>% 
-  map_dfr(~lm(speed ~ yearnew + fast, data = .) %>% 
+bootreg <- derby.df |> 
+  bootstraps(1000) |>
+  pull(splits) |> 
+  map_dfr(~lm(speed ~ yearnew + fast, data = .) |> 
             tidy())
-bootreg %>% 
-  group_by(term) %>% 
+bootreg |> 
+  group_by(term) |> 
   dplyr::summarize(low=quantile(estimate, .025),
             high=quantile(estimate, .975))
 ```

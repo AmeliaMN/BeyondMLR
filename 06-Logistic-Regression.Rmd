@@ -121,8 +121,8 @@ Tot <- c(24,180,204)
 table1chp6 <- data.frame(State,Saves,Scores,Tot)
 colnames(table1chp6) <- c(" ","Saves","Scores","Total")
 kable(table1chp6, booktabs=T,
-      caption="Soccer goalkeepers' penalty kick saves when their team is and is not behind.") %>%
-  kable_styling(full_width = F) %>%
+      caption="Soccer goalkeepers' penalty kick saves when their team is and is not behind.") |>
+  kable_styling(full_width = F) |>
   add_footnote("(Source: Roskes et al. 2011.)", notation = "none")
 ```
 
@@ -215,7 +215,7 @@ soccer <- tribble(
   "Yes",  22,  24,
   "No",  141, 180
 )
-soccer <- soccer %>%
+soccer <- soccer |>
   mutate(prop1 = scores / shots)
 soccer
 
@@ -292,18 +292,18 @@ NumVotes <- c(110,15,1804,68)
 table2chp6 <- data.frame(community, pctBlack, distance, YesVotes, NumVotes)
 colnames(table2chp6) <- c("community","pctBlack", "distance","YesVotes","NumVotes")
 kable(table2chp6, booktabs=T, 
-      caption="Sample of the data for the Hale County, Alabama, railroad subsidy vote.") %>%
+      caption="Sample of the data for the Hale County, Alabama, railroad subsidy vote.") |>
   kable_styling(full_width = F)
 ```
 
 ```{r, include=FALSE}
 rrHale.df = read.csv("data/RR_Data_Hale.csv")
-rrHale.df <- rrHale.df %>%
+rrHale.df <- rrHale.df |>
   dplyr::select(community = County, pctBlack = X..Pop..Black, 
                 distance = Distance.from.RR, 
                 YesVotes = Yes.1st.Vote, 
-                NumVotes = Num.Voting.1st) %>%
-  filter(!is.na(pctBlack)) %>%
+                NumVotes = Num.Voting.1st) |>
+  filter(!is.na(pctBlack)) |>
   mutate(propYes = YesVotes / NumVotes, 
          InFavor = (propYes > .50)) 
 rrHale.df
@@ -541,7 +541,7 @@ The sum of the individual deviance residuals is referred to as the **deviance** 
 We begin a residual analysis of our interaction model by plotting the residuals against the fitted values in Figure \@ref(fig:resid). This kind of plot for binomial regression would produce two linear trends with similar negative slopes if there were equal sample sizes $m_i$ for each observation. 
 
 ```{r, resid,fig.align="center",out.width="60%", fig.cap='Fitted values by residuals for the interaction model for the Railroad Referendum data.',echo=FALSE, warning=FALSE, comment=NA}
-rrHale.df <- rrHale.df %>%
+rrHale.df <- rrHale.df |>
   mutate(resid.BxD = residuals(model.HaleBxD), 
          fit.BxD = fitted.values(model.HaleBxD))
 ggplot(rrHale.df, aes(x = fit.BxD, y = resid.BxD)) +
@@ -702,7 +702,7 @@ risk2009.data = foreign::read.spss("data/yrbs09.sav", to.data.frame=TRUE)
 names(risk2009.data)
 
 set.seed(33)
-risk2009.samp <- risk2009.data %>%
+risk2009.samp <- risk2009.data |>
   sample_n(500)
 rm(risk2009.data)
 
@@ -733,13 +733,13 @@ media=ifelse(media==0,0.5,media)
 media=ifelse(media==-1,0,media)
 table(media)
 
-risk2009 <- risk2009.samp %>%
+risk2009 <- risk2009.samp |>
   mutate(sex = sex.l, lose.wt = lose.wt.l, sport = sport.l, 
-         media = media, lose.wt.01 = lose.wt2) %>%
+         media = media, lose.wt.01 = lose.wt2) |>
   mutate(sport_fac = sport4,
-         sport_num = parse_number(as.character(sport4))) %>%
+         sport_num = parse_number(as.character(sport4))) |>
   dplyr::select(lose.wt, lose.wt.01, sex, sport, sport_fac,
-                sport_num, media, bmipct) %>%
+                sport_num, media, bmipct) |>
   filter(complete.cases(.))
 rm(risk2009.samp)
 
@@ -748,7 +748,7 @@ write_csv(risk2009, "data/risk2009.csv")
 
 ```{r, include = FALSE}
 risk2009 <- read_csv("data/risk2009.csv")
-risk2009 <- risk2009 %>%
+risk2009 <- risk2009 |>
   mutate(female = ifelse(sex=="Female", 1, 0))
 
 #primary response
@@ -759,7 +759,7 @@ prop.table( mosaic::tally(~ sex, data = risk2009) )
 prop.table( mosaic::tally(~ sport, data = risk2009) )   
 prop.table( mosaic::tally(~ media, data = risk2009) )   
 
-risk2009 %>%
+risk2009 |>
   summarise(meanBMI = mean(bmipct),
             medianBMI = median(bmipct))
 
@@ -785,8 +785,8 @@ ggplot(data = risk2009, aes(x = sex, fill = lose.wt)) +
 
 
 ```{r, echo=FALSE, include=FALSE, comment=NA}
-risk2009 %>%
-  group_by(sex, lose.wt) %>%
+risk2009 |>
+  group_by(sex, lose.wt) |>
   summarise(mean = mean(bmipct), sd = sd(bmipct), n = n())
 ```
 
@@ -806,15 +806,15 @@ Table \@ref(tab:table3chp6) displays the mean BMI of those wanting and not wanti
 
 If we consider including a BMI term in our model(s), the logit should be linearly related to BMI. We can investigate this assumption by constructing an empirical logit plot. In order to calculate empirical logits, we first divide our data by sex. Within each sex, we generate 10 groups of equal sizes, the first holding the bottom 10\% in BMI percentile for that sex, the second holding the next lowest 10\%, etc. Within each group, we calculate the proportion, $\hat{p}$ that reported wanting to lose weight, and then the empirical log odds, $log(\frac{\hat{p}}{1-\hat{p}})$, that a young person in that group wants to lose weight.
 ```{r, logitBMIsex, fig.align="center",out.width="60%", fig.cap='Empirical logits of trying to lose weight by BMI and sex.',echo=FALSE, warning=FALSE, comment=NA, message=FALSE}
-risk2009 <- risk2009 %>%
-  group_by(sex) %>%
+risk2009 <- risk2009 |>
+  group_by(sex) |>
   mutate(BMIcuts = cut_number(bmipct,10))
   
-emplogit1 <- risk2009 %>%
-  group_by(sex, BMIcuts) %>%
+emplogit1 <- risk2009 |>
+  group_by(sex, BMIcuts) |>
   summarise(prop.lose = mean(lose.wt.01), 
             n = n(),
-            midpoint = median(bmipct)) %>%
+            midpoint = median(bmipct)) |>
   mutate(prop.lose = ifelse(prop.lose==0, .01, prop.lose),
          emplogit = log(prop.lose / (1 - prop.lose)))
 
@@ -854,10 +854,10 @@ ggplot(data = risk2009, aes(x = as.factor(media),
 ```
 
 ```{r, logitmediasex, fig.align="center",out.width="60%", fig.cap='Empirical logits for the odds of trying to lose weight by TV watching and sex.',echo=FALSE, warning=FALSE, message=FALSE}
-emplogit2 <- risk2009 %>%
-  group_by(sex, media) %>%
-  summarise(prop.lose = mean(lose.wt.01), n = n()) %>%
-  mutate(prop.lose = ifelse(prop.lose==0, .01, prop.lose)) %>%
+emplogit2 <- risk2009 |>
+  group_by(sex, media) |>
+  summarise(prop.lose = mean(lose.wt.01), n = n()) |>
+  mutate(prop.lose = ifelse(prop.lose==0, .01, prop.lose)) |>
   mutate(emplogit = log(prop.lose / (1 - prop.lose)))
 
 ggplot(emplogit2, aes(x = media, y = emplogit, color = sex)) +
@@ -1059,8 +1059,8 @@ grp4 <- c("High", 3, 0)
 fissurechp6 <- data.frame(col1, grp1, grp2, grp3, grp4)
 kable(fissurechp6, booktabs = T, 
       col.names = c("Turbine group", "1", "2", "3", "4"),
-      caption = "Data for Conceptual Exercise 4.") %>% 
-  column_spec(1, width = "5cm")  %>%
+      caption = "Data for Conceptual Exercise 4.") |> 
+  column_spec(1, width = "5cm")  |>
   kable_styling(full_width = F)
 ```
 
@@ -1199,13 +1199,13 @@ cdplot(as.factor(rtemp1)~dtemp1)
     n. Read the article that appeared in the *British Medical Journal*.  What similarities and differences do you see between their analyses and yours?  What are a couple of things you learned from the article that weren’t apparent in the short summary at the beginning of the assignment.
 
 ```{r, eval = FALSE}
-birds <- read_csv("data/birdkeeping.csv") %>%
+birds <- read_csv("data/birdkeeping.csv") |>
   mutate(sex = ifelse(female == 1, "Female", "Male"),
          socioecon_status = ifelse(highstatus == 1, 
                                    "High", "Low"),
          keep_bird = ifelse(bird == 1, "Keep Bird", "No Bird"),
          lung_cancer = ifelse(cancer == 1, "Cancer", 
-                              "No Cancer")) %>%
+                              "No Cancer")) |>
   mutate(years_factor = cut(yrsmoke, 
                             breaks = c(-Inf, 0, 25, Inf),
             labels = c("No smoking", "1-25 years", 

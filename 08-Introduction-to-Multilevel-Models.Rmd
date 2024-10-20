@@ -87,7 +87,7 @@ mpqnem <- c(16,16,16,17,17,17)
 table1chp8 <- data.frame(Obs,id,diary,perf_type,memory,
     na,gender,instrument,mpqab,mpqpem,mpqnem)
 kable(table1chp8, booktabs=T,
-      caption="A snapshot of selected variables from the first three and the last three observations in the Music Performance Anxiety case study.") %>%
+      caption="A snapshot of selected variables from the first three and the last three observations in the Music Performance Anxiety case study.") |>
     kable_styling(latex_options = "scale_down", font_size = 9) 
 ```
 
@@ -120,12 +120,12 @@ head(music)       # examine first 6 rows
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 # number of diary entries for each subject
-music %>% count(id)     
+music |> count(id)     
 # number of subjects with diary entry of a given number
-music %>% count(diary)  
+music |> count(diary)  
 
 select <- dplyr::select
-keydata <- music %>% 
+keydata <- music |> 
   dplyr::select(id, diary, perform_type, memory, audience, 
       na, gender, instrument, mpqab, mpqpem, mpqnem)
 keydata
@@ -134,25 +134,25 @@ keydata
 # per subject, which would be easier if every subject 
 # had a diary entry labeled '1' - should be 37 rows 
 # and 6 columns (one per L2 variable)
-music.lev2 <-  keydata %>%
-  group_by(id) %>%
-  filter(row_number() == 1) %>%
+music.lev2 <-  keydata |>
+  group_by(id) |>
+  filter(row_number() == 1) |>
   select(id, gender:mpqnem)
 
 # Add average across all performances for each subject 
 # for EDA plots
-meanbysubj <- music %>% group_by(id) %>%
+meanbysubj <- music |> group_by(id) |>
   summarise(meanbysubj = mean(na, na.rm = TRUE))
-music.lev2 <- music.lev2 %>%
+music.lev2 <- music.lev2 |>
   left_join(meanbysubj, by = "id")
 
 # Exploratory data analysis
 # Summarize Level 1 covariates (and responses) by 
 # ignoring within subject correlation and pretending 
 # all observations are independent
-music %>% count(perform_type) 
-music %>% count(memory) 
-music %>% count(audience) 
+music |> count(perform_type) 
+music |> count(memory) 
+music |> count(audience) 
 
 # create ggplot theme for plots
 # theme with grid, grey background 
@@ -183,8 +183,8 @@ To generate an initial examination of Level Two covariates, we consider a data s
 
 ```{r,include=FALSE}
 # Summarize Level 2 covariates using data set with one observation per subject,
-music.lev2 %>% ungroup(id) %>% count(gender)
-music.lev2 %>% ungroup(id) %>% count(instrument)
+music.lev2 |> ungroup(id) |> count(gender)
+music.lev2 |> ungroup(id) |> count(instrument)
 
 nem1 <- ggplot(data=music.lev2,aes(x=mpqnem)) + 
   geom_histogram(binwidth = 5, fill = "white",
@@ -399,7 +399,7 @@ knit_hooks$set(output = function(x, options) {
 
 # First generate indicator variables for two covariates 
 # used in Section 3
-music <- music %>%
+music <- music |>
   mutate(orch = ifelse(instrument=="orchestral instrument",1,0),
          large = ifelse(perform_type=="Large Ensemble",1,0) )
 ```
@@ -427,7 +427,7 @@ We will begin by considering all performances by a single individual. For instan
 table2chp8 <- music[music$id == 22, c("id", "diary",
     "perform_type", "audience", "na", "instrument")]
 kable(table2chp8, booktabs=T, 
-  caption="Data from the 15 performances of Musician \\#22.") %>%
+  caption="Data from the 15 performances of Musician \\#22.") |>
   kable_styling(latex_options = "scale_down")
 ```
   
@@ -447,7 +447,7 @@ For Subject 22, we estimate $\hat{a}_{22}=24.5$, $\hat{b}_{22}=-7.8$, and $\hat{
 
 ```{r, include=FALSE}
 # Add new indicators to music data set
-music <- music %>%
+music <- music |>
   mutate(students = ifelse(audience=="Student(s)",1,0),
          juried = ifelse(audience=="Juried Recital",1,0),
          public = ifelse(audience=="Public Performance",1,0),
@@ -457,11 +457,11 @@ music <- music %>%
          vocal = ifelse(instrument=="voice",1,0) )
 
 #Model id22 (for Musician #22 only)
-music %>% filter(id==22) %>% 
+music |> filter(id==22) |> 
   select(id, diary, perform_type, audience, na, instrument)
 
 # pick off data for Musician 22
-id22 <- music %>% filter(id==22)   
+id22 <- music |> filter(id==22)   
 ```
 
 ```{r, comment=NA}
@@ -481,14 +481,14 @@ For the present time, we will model Subject 22's anxiety scores for his 15 perfo
 ```{r, include=FALSE, warning=FALSE}
 # LVCF analysis 
 #   (can't analyze large with only 1 obs per subject)
-lvcf.na <- music %>% 
-  group_by(id) %>%
-  filter(row_number() == n() ) %>%
-  select(id, na) %>%
+lvcf.na <- music |> 
+  group_by(id) |>
+  filter(row_number() == n() ) |>
+  select(id, na) |>
   rename (lvcf.na = na)
 
-music.lev2 <- music.lev2 %>%
-  left_join(lvcf.na, by = "id") %>%
+music.lev2 <- music.lev2 |>
+  left_join(lvcf.na, by = "id") |>
   mutate(orch = ifelse(instrument=="orchestral instrument",1,0) )
 lvcf.model=lm(lvcf.na ~ orch, data = music.lev2)
 summary(lvcf.model)
@@ -502,8 +502,8 @@ summary(lvcf.model)
 int <- by(music, music$id, function(data)
                   coefficients(lm(na ~ large, data = data))[[1]])
 summary(int)   # summary statistics for 37 intercepts
-music.lev2 <- music.lev2 %>%
-  ungroup(id) %>%
+music.lev2 <- music.lev2 |>
+  ungroup(id) |>
   mutate(int = int[1:37])
 
 inthist <- ggplot(data=music.lev2,aes(x=int)) + 
@@ -516,7 +516,7 @@ inthist <- ggplot(data=music.lev2,aes(x=int)) +
 rate <- by(music, music$id, function(data)
               coefficients(lm(na ~ large, data = data))[[2]])
 summary(rate)
-music.lev2 <- music.lev2 %>%
+music.lev2 <- music.lev2 |>
   mutate(rate = rate[1:37])
 
 slopehist <- ggplot(data=music.lev2,aes(x=rate)) + 
@@ -1207,7 +1207,7 @@ and replace baseline NEM in Model D with its centered version to create Model E:
 
 ```{r verb10, include=FALSE}
 mean(music$mpqnem)
-music <- music %>%
+music <- music |>
   mutate(cmpqnem = mpqnem - mean(mpqnem))
 ```
 

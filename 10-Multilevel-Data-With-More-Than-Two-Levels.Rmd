@@ -94,7 +94,7 @@ seedwd[135:146,2:11]   # illustrate wide data
 ```{r table1chp10, echo=FALSE}
 table1chp10 <- seedwd[135:146,2:11]   # illustrate wide data
 kable(table1chp10, booktabs=T, 
-      caption="A snapshot of data (Plants 231-246) from the Seed Germination case study in wide format.") %>%
+      caption="A snapshot of data (Plants 231-246) from the Seed Germination case study in wide format.") |>
       kable_styling(latex_options = "scale_down")
 ```
 
@@ -105,22 +105,22 @@ Although the experimental design called for $72*6=432$ plants, the wide data set
 md.pattern(seedwd)
 
 # Remove plants that did not germinate
-seedwd <- seedwd %>%
+seedwd <- seedwd |>
   mutate(nope = is.na(hgt13) + is.na(hgt18) + is.na(hgt23) +
-           is.na(hgt28)) %>%
+           is.na(hgt28)) |>
   filter(nope < 4)
 
 # Create data frame in LONG form (one obs per plant 
 #   measurement time)
-seedlg <- seedwd %>%
-  gather(key = time, value = hgt, hgt13:hgt28) %>%
+seedlg <- seedwd |>
+  gather(key = time, value = hgt, hgt13:hgt28) |>
   mutate(time = as.integer(str_sub(time, -2)),
          time13 = time - 13 ) 
 ```
 
 ```{r table2chp10, echo=FALSE}
 #tablelong
-tab2chp10 <- seedlg %>% filter(plant %in% c(236:242)) %>%
+tab2chp10 <- seedlg |> filter(plant %in% c(236:242)) |>
   arrange(plant, time13)
 tab2chp10df <- data.frame(tab2chp10)
 table2chp10 <- tab2chp10df[,c(2,3,4,5,6,7,10,11)]
@@ -139,7 +139,7 @@ Because we suspect that height measurements over time for a single plant are hig
 ```{r, include=FALSE}
 #getting started-2
 # create indicator variables for later analyses
-seedlg <- seedlg %>%
+seedlg <- seedlg |>
   mutate(cult=ifelse(soil=="CULT",1,0),
          rem=ifelse(soil=="REM",1,0),
          stp=ifelse(soil=="STP",1,0),
@@ -149,28 +149,28 @@ seedlg <- seedlg %>%
          nostrl=ifelse(sterile=="N",1,0) )
 
 # create separate data sets of leadplants and coneflowers
-conedata <- seedlg %>%
+conedata <- seedlg |>
   filter(cone==1)
-leaddata <- seedlg %>%
+leaddata <- seedlg |>
   filter(lead==1)
 
 ## Exploratory data analysis ##
 
 # Rough look at Level Three covariates
-seedlg %>% count(species)
-seedlg %>% count(soil)
-seedlg %>% count(sterile)
+seedlg |> count(species)
+seedlg |> count(soil)
+seedlg |> count(sterile)
 
 # From here on, do everything separately for leadplants and coneflowers #
 
 # Add average across all time points for each plant for EDA plots
-meanplant <- seedlg %>% group_by(plant) %>%
+meanplant <- seedlg |> group_by(plant) |>
   summarise(meanplant = mean(hgt, na.rm = TRUE))
-seedwd <- seedwd %>%
+seedwd <- seedwd |>
   left_join(meanplant, by = "plant")
-conewd <- seedwd %>%
+conewd <- seedwd |>
   filter(species=="C")
-leadwd <- seedwd %>%
+leadwd <- seedwd |>
   filter(species=="L")
 ```
 
@@ -206,7 +206,7 @@ We also use spaghetti plots to examine time trends within species to see (a) if 
 ```{r,spagbyspec,fig.align="center",out.width="60%", fig.cap='Spaghetti plot by species with loess fit.  Each line represents one plant.',echo=FALSE, warning=FALSE, message=FALSE}
 # spaghetti plot by species - all plants (This plot used 
 #   earlier now); add loess smoothing curve for overall trend
-seedlg <- seedlg %>%
+seedlg <- seedlg |>
   mutate(speciesname = ifelse(species=="C","Coneflowers", 
                               "Leadplants") )
 options(warn = -1)
@@ -228,7 +228,7 @@ Lattice plots, illustrating several observational units simultaneously, each wit
 #   - linear fit
 set.seed(1313)
 randplant = as.vector(sample(leadwd$plant,size=25))
-seedrdl <- seedlg %>%
+seedrdl <- seedlg |>
   filter(plant %in% randplant)
 ggplot(seedrdl, aes(x=time, y=hgt)) + 
   facet_wrap(~plant,ncol=5) + 
@@ -257,7 +257,7 @@ Spaghetti plots can also be an effective tool for examining the potential effect
 
 ```{r, spaglpsoil, fig.align="center",out.width="60%", fig.cap='Spaghetti plot for leadplants by soil type with loess fit.',echo=FALSE, warning=FALSE, message=FALSE}
 
-leaddata <- leaddata %>%
+leaddata <- leaddata |>
   mutate(soilname = recode(soil, STP="Reconstructed",
                            CULT="Cultivated", REM="Remnant") )
 options(warn = -1)
@@ -272,7 +272,7 @@ options(warn = oldw)
 
 ```{r, spaglpster, fig.align="center",out.width="60%", fig.cap='Spaghetti plot for leadplants by sterilization with loess fit.',echo=FALSE, warning=FALSE, message=FALSE}
 
-leaddata <- leaddata %>%
+leaddata <- leaddata |>
   mutate(sterilename = recode(sterile, Y="Sterilized", 
                               N="Not Sterilized") )
 options(warn = -1)
@@ -373,11 +373,11 @@ cor(int2, rate2, use="complete.obs")
 #   Plus ANOVA-type boxplot of within pot vs within 
 #   plant variability
 
-seedwdplus <- seedwd %>%
-  filter(species=="L") %>%
+seedwdplus <- seedwd |>
+  filter(species=="L") |>
   mutate(int = int, rate = rate)
-bypot <- seedwdplus %>%
-  group_by(pot) %>%
+bypot <- seedwdplus |>
+  group_by(pot) |>
   summarise(sd_int = unname(sd(int)),
             mean_int = unname(mean(int)),
             sd_rate = unname(sd(rate)),
@@ -417,7 +417,7 @@ grid.arrange(int.byspecies,rate.byspecies,ncol=2)
 
 ```{r, irboxbysoil,fig.align="center",out.width="60%", fig.cap='Boxplots of (a) intercepts and (b) slopes for all leadplants by soil type, based on a linear fit to height data from each plant.',echo=FALSE, warning=FALSE}
 
-seedwdplus <- seedwdplus %>%
+seedwdplus <- seedwdplus |>
   mutate(soilname = recode(soil, STP="Reconstructed",
                            CULT="Cultivated",
                            REM="Remnant") )
@@ -434,7 +434,7 @@ grid.arrange(int.bysoil,rate.bysoil,ncol=2)
 
 ```{r, irboxbyster, fig.align="center",out.width="60%", fig.cap='Boxplots of (a) intercepts and (b) slopes for all leadplants by sterilization, based on a linear fit to height data from each plant.',echo=FALSE, warning=FALSE}
 
-seedwdplus <- seedwdplus %>%
+seedwdplus <- seedwdplus |>
   mutate(sterilename = recode(sterile, Y="Sterilized", 
                               N="Not Sterilized") )
 int.bysterile <- ggplot(seedwdplus,aes(x=sterilename,y=int)) + 
@@ -453,13 +453,13 @@ Since we have time at Level One, any exploratory analysis of Case Study \@ref(cs
 ```{r, corrstruct, fig.align="center",out.width="60%",fig.cap='Correlation structure within plant.  The upper right contains correlation coefficients between residuals at pairs of time points, the lower left contains scatterplots of the residuals at time point pairs, and the diagonal contains histograms of residuals at each of the four time points.',echo=FALSE, warning=FALSE, message=FALSE}
 
 # Examine correlation structure
-seed.nona <- leaddata %>%
+seed.nona <- leaddata |>
   filter(!is.na(hgt))
 hgt.lm = lm(hgt~time13, data=seed.nona)
-seed.nona <- seed.nona %>%
+seed.nona <- seed.nona |>
   mutate(lmres = resid(hgt.lm))
-hgtw <- seed.nona %>%
-  dplyr::select(plant, time13, lmres) %>%
+hgtw <- seed.nona |>
+  dplyr::select(plant, time13, lmres) |>
   spread(key = time13, value = lmres, sep = "=") 
 hgtw.1 <- na.omit(hgtw)
 ggpairs(hgtw.1[,2:5], lower=list(continuous="smooth"),
@@ -851,7 +851,7 @@ Let's see how new plant heights are generated under the parametric bootstrap. Co
 ```{r, 10verb7, echo=FALSE, comment=NA}
 verb7 <- seedwd[1:2, c(2:11)]
 kable(verb7, booktabs=T, 
-      caption = "Original data for Plants 11 and 12 from Pot 1.") %>%
+      caption = "Original data for Plants 11 and 12 from Pot 1.") |>
       kable_styling(latex_options = "scale_down")
 ```
 
@@ -1596,11 +1596,11 @@ table4chp10[12,2] <- paste0("\\textbf{", table4chp10[12,2], "}")
 table4chp10[14,2] <- paste0("\\textbf{", table4chp10[14,2], "}")
 table4chp10[15,2] <- paste0("\\textbf{", table4chp10[15,2], "}")
 kable(table4chp10, booktabs=T, escape=F,
-      caption="Correlates of collective efficacy from Table 3 of Sampson et al. (1997).") %>%
-  kable_styling(latex_options = "scale_down") %>%
-  pack_rows("Person-level predictors", 2, 12) %>%
-  pack_rows("Neighborhood-level predictors", 13, 15) %>%
-  pack_rows("Variance components", 16, 17) %>%
+      caption="Correlates of collective efficacy from Table 3 of Sampson et al. (1997).") |>
+  kable_styling(latex_options = "scale_down") |>
+  pack_rows("Person-level predictors", 2, 12) |>
+  pack_rows("Neighborhood-level predictors", 13, 15) |>
+  pack_rows("Variance components", 16, 17) |>
   pack_rows("Percent of variance explained", 18, 19)
 ```
 
@@ -1633,9 +1633,9 @@ table5chp10 <- data.frame(Variable2, Coefficient2, SE3 ,t2, Coefficient3, SE4, t
 colnames(table5chp10) <- c("Variable","Coefficient","SE", "t", 
                            "Coefficient","SE", "t")
 kable(table5chp10, booktabs=T, 
-      caption="Neighborhood correlates of perceived neighborhood violence from a portion of Table 4 from Sampson et al. (1997).") %>%
-      add_header_above(c(" ","Social composition"=3, "Social comp and collective efficacy"=3)) %>%
-      add_header_above(c(" ","Model 1"=3, "Model 2"=3)) %>%
+      caption="Neighborhood correlates of perceived neighborhood violence from a portion of Table 4 from Sampson et al. (1997).") |>
+      add_header_above(c(" ","Social composition"=3, "Social comp and collective efficacy"=3)) |>
+      add_header_above(c(" ","Model 1"=3, "Model 2"=3)) |>
     kable_styling(latex_options = "scale_down")
 ```
 

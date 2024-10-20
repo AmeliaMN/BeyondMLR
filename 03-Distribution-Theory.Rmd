@@ -361,12 +361,12 @@ x=seq(0,4,by=0.01)  # possible values
 probex1 <- dexp(x,.5)  # P(Y=y)
 probex2 <- dexp(x,1)
 probex3 <- dexp(x,5)
-Expdf <- tibble(x,probex1, probex2, probex3) %>%
+Expdf <- tibble(x,probex1, probex2, probex3) |>
   rename(x = x,
          `0.5` = probex1,
          `1` = probex2,
-         `5` = probex3) %>%
-  gather(2:4, key = "Lambda", value = "value") %>%
+         `5` = probex3) |>
+  gather(2:4, key = "Lambda", value = "value") |>
   mutate(Lambda = factor(Lambda, levels = c("0.5", "1", "5")))
 ggplot(data = Expdf, aes(x = x, y = value, color = Lambda)) +
   geom_line(aes(linetype = Lambda)) +
@@ -412,8 +412,8 @@ x <- seq(0, 7, by = 0.01)
 `r = 5, lambda = 5` <- dgamma(x, 5, rate = 5)
 `r = 5, lambda = 7` <- dgamma(x, 5, rate = 7)
 
-gammaDf <- tibble(x, `r = 1, lambda = 1`, `r = 2, lambda = 1`, `r = 5, lambda = 5`, `r = 5, lambda = 7`) %>%
-  gather(2:5, key = "Distribution", value = "value") %>%
+gammaDf <- tibble(x, `r = 1, lambda = 1`, `r = 2, lambda = 1`, `r = 5, lambda = 5`, `r = 5, lambda = 7`) |>
+  gather(2:5, key = "Distribution", value = "value") |>
   mutate(Distribution = factor(Distribution, 
                                levels = c("r = 2, lambda = 1", 
                                           "r = 1, lambda = 1", 
@@ -476,12 +476,12 @@ norm2 <- dnorm(x, 0 , 1)
 norm3 <- dnorm(x, 5, 5)
 norm4 <- dnorm(x, 0, 3)
 
-normDf <- tibble(x, norm1, norm2, norm3, norm4) %>%
+normDf <- tibble(x, norm1, norm2, norm3, norm4) |>
   rename(`N(-5, 2)` = norm1,
          `N(0, 1)` = norm2,
          `N(10, 5)` = norm3,
-         `N(0, 3)` = norm4) %>%
-  gather(2:5, key = "Distribution", value = "value") %>%
+         `N(0, 3)` = norm4) |>
+  gather(2:5, key = "Distribution", value = "value") |>
   mutate(Distribution = factor(Distribution, 
     levels = c("N(10, 5)","N(0, 3)", "N(0, 1)", "N(-5, 2)")))
 
@@ -529,13 +529,13 @@ prob1 <- dbeta(x, 2, 5)
 prob2 <- dbeta(x, .5, .5)
 prob3 <- dbeta(x, 2, 2)
 prob4 <- dbeta(x, 4, 1)
-betaDf <- tibble(x,prob1, prob2, prob3, prob4) %>%
+betaDf <- tibble(x,prob1, prob2, prob3, prob4) |>
   rename(x = x,
          `Beta(2, 5)` = prob1,
          `Beta(0.5, 0.5)` = prob2,
          `Beta(2, 2)` = prob3,
-         `Beta(4, 1)` = prob4) %>%
-  gather(2:5, key = "Distribution", value = "value") %>%
+         `Beta(4, 1)` = prob4) |>
+  gather(2:5, key = "Distribution", value = "value") |>
   mutate(Distribution = factor(Distribution, 
     levels = c("Beta(0.5, 0.5)", "Beta(4, 1)", "Beta(2, 2)",
                "Beta(2, 5)"))) #manual reorder
@@ -597,12 +597,12 @@ prob1 <- dchisq(x,1)  # P(Y=y)
 prob2 <- dchisq(x,3)
 prob3 <- dchisq(x,7)
 
-chiDf <- tibble(x,prob1, prob2, prob3) %>%
+chiDf <- tibble(x,prob1, prob2, prob3) |>
   rename(x = x,
          `1` = prob1,
          `3` = prob2,
-         `7` = prob3) %>%
-  gather(2:4, key = "Degrees of Freedom", value = "value") %>%
+         `7` = prob3) |>
+  gather(2:4, key = "Degrees of Freedom", value = "value") |>
   mutate(`Degrees of Freedom` = factor(`Degrees of Freedom`, levels = c("7", "3", "1")))
 
 ggplot(data = chiDf, 
@@ -631,13 +631,13 @@ probT2 <- dt(x, 2)
 probT3 <- dt(x, 10)
 probT4 <- dnorm(x, 0, 1)
 
-tDf <- tibble(x, probT1, probT2, probT3, probT4) %>%
+tDf <- tibble(x, probT1, probT2, probT3, probT4) |>
   rename(x = x,
          `1` = probT1,
          `2` = probT2,
          `10` = probT3,
-         `Inf` = probT4) %>%
-  gather(2:5, key = "Degrees of Freedom", value = "value") %>%
+         `Inf` = probT4) |>
+  gather(2:5, key = "Degrees of Freedom", value = "value") |>
   mutate(`Degrees of Freedom` = factor(`Degrees of Freedom`, levels = c("1","2","10", "Inf")))
 
 ggplot(data = tDf, aes(x = x, y = value, 
@@ -663,11 +663,11 @@ probF1 <- df(x,1,1)  # P(Y=y)
 probF2 <- df(x,4,2)
 probF3 <- df(x,5,10)
 
-fDf <- tibble(x, probF1, probF2, probF3) %>%
+fDf <- tibble(x, probF1, probF2, probF3) |>
   rename(x = x,
          `F(1, 1)` = probF1,
          `F(4, 2)` = probF2,
-         `F(5, 10)` = probF3) %>%
+         `F(5, 10)` = probF3) |>
   gather(2:4, key = "Distribution", value = "value")
 
 ggplot(data = fDf, aes(x = x, y = value, color = Distribution)) +
@@ -727,8 +727,8 @@ colnames(table1chp3) <- c("Distribution Name","pmf / pdf",
   "Parameters","Possible Y Values", "Description")
 if (knitr:::is_latex_output()) {
   kable(table1chp3, booktabs = T, escape = F,
-        caption="Review of mentioned random variables.") %>%
-  column_spec(5, width = "10em") %>%
+        caption="Review of mentioned random variables.") |>
+  column_spec(5, width = "10em") |>
   kable_styling(latex_options = "scale_down")
 } else {
   kable(table1chp3, "html", booktabs = T, caption="Review of mentioned random variables.")

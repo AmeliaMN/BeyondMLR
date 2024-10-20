@@ -83,7 +83,7 @@ NumbChild <- c(6,7,10,8,10,3,6,50)
 ```{r table1chp2, echo=FALSE}
 table1chp2 <- data.frame(Composition, NumbFams, NumbChild)
 colnames(table1chp2) <- c("Composition","Number of families", "Number of children")
-kable(table1chp2, booktabs=T, caption="The gender composition of 30 families in the hypothetical data set of n=50 children.") %>%
+kable(table1chp2, booktabs=T, caption="The gender composition of 30 families in the hypothetical data set of n=50 children.") |>
   kable_styling(full_width = F)
 ```
 
@@ -182,8 +182,8 @@ kable(table2chp2, booktabs = T,
         "Number of families",
         "Likelihood contribution for multiple families"),
       caption = "The likelihood factors for the hypothetical data set of n=50 children.", 
-      escape=F) %>%
-  column_spec(c(2,4), width = "4cm") %>% 
+      escape=F) |>
+  column_spec(c(2,4), width = "4cm") |> 
   kable_styling(latex_options = "scale_down")
 ```
 
@@ -348,7 +348,7 @@ Numfamis2 <- c(6,7,5,4,5,1,2,30)
 #lik50_conditional.tab
 table3chp2 <- data.frame(Comp2,Likcont,Priorst,Numfamis2)
 colnames(table3chp2) <- c("Composition","Likelihood contribution","Prior Status","Number of families")
-kable(table3chp2, booktabs=T,caption="Family contributions to the likelihood for a Sex Conditional Model using a hypothetical data set  of n=50 children from 30 families.",escape=F) %>% kable_styling(latex_options = "scale_down")
+kable(table3chp2, booktabs=T,caption="Family contributions to the likelihood for a Sex Conditional Model using a hypothetical data set  of n=50 children from 30 families.",escape=F) |> kable_styling(latex_options = "scale_down")
 ```
 
 ### Application to Hypothetical Data
@@ -436,8 +436,8 @@ kable(table5chp2, booktabs = T,
       col.names = c("Family Composition",
     "Number of families", "Number of children",
     "males : females", "p_B"),
-      caption = "Number of families and children in families with given composition in NLSY data. Sex ratio and proportion males are given by family size.") %>% 
-  column_spec(1:5, width = "3cm") %>% 
+      caption = "Number of families and children in families with given composition in NLSY data. Sex ratio and proportion males are given by family size.") |> 
+  column_spec(1:5, width = "3cm") |> 
   kable_styling(latex_options = "scale_down")
 ```
     
@@ -457,7 +457,7 @@ Percsame <- c("45%", "27%")
 #All same sex table
 table6chp2 <- data.frame(NumKids,NumFams,Numsame,Percsame)
 colnames(table6chp2) <- c("Number of children","Number of families", "Number with all same sex","Percent with same sex")
-kable(table6chp2, booktabs=T, caption="Proportion of families in NLSY data with all the same sex by number of children in the family. Note that 1-child families are all homogeneous with respect to sex, so we look at 2- and 3-child families.") %>% kable_styling(latex_options = "scale_down")
+kable(table6chp2, booktabs=T, caption="Proportion of families in NLSY data with all the same sex by number of children in the family. Note that 1-child families are all homogeneous with respect to sex, so we look at 2- and 3-child families.") |> kable_styling(latex_options = "scale_down")
 ```
     
 Table \@ref(tab:table7chp2) contains the number of families by size and the percentage of those which are families with one boy who is last. Some of these families may have "waited" for a boy and then quit childbearing after a boy was born. We see the proportion of one-child families with a boy is slightly less than the 50\% expected. We'd expect one out of four, or 25\%, of 2-child family configurations to have one boy last and there is 27\% in our dataset. Only 8.6\% of 3-child families have one boy last, but in theory we would expect one out of eight or 12.5\% of 3-child families to have one boy last. So if, in fact, the probability of a boy is 50\%, there does not appear to be evidence supporting the notion that families wait for a boy. 
@@ -473,7 +473,7 @@ Percboylst <- c("49.4%","27.2%","8.6%")
 #one boy table
 table7chp2 <- data.frame(Numkid,Numfam,Numboylst,Percboylst)
 colnames(table7chp2) <-c("Number of children","Number of families","Number with one boy last","Percent with boy last")
-kable(table7chp2,booktabs=T, caption="Proportion of families in NLSY data with only one boy who is born last.") %>% kable_styling(latex_options = "scale_down")
+kable(table7chp2,booktabs=T, caption="Proportion of families in NLSY data with only one boy who is born last.") |> kable_styling(latex_options = "scale_down")
 ```
     
 There are many other ways to formulate and explore the idea that sex runs in families or that couples wait for a boy (or a girl). See @Rodgers2001 for other examples.
@@ -496,8 +496,8 @@ sex_uncond_model <- data.frame(Comps, Contribs)
 colnames(sex_uncond_model) <-c("Family composition",
                                "Likelihood contribution")
 kable(sex_uncond_model, booktabs = T, escape = F,
-      caption="Contributions to the likelihood function for the Sex Unconditional Model for a sample of family compositions from the NLSY data.") %>% 
-  column_spec(1:2, width = "5cm") %>%
+      caption="Contributions to the likelihood function for the Sex Unconditional Model for a sample of family compositions from the NLSY data.") |> 
+  column_spec(1:2, width = "5cm") |>
   kable_styling(full_width = F)
 ```
 
@@ -536,8 +536,8 @@ sex_cond_model <- data.frame(Comps, Contribs)
 colnames(sex_cond_model) <-c("Family composition",
                                "Likelihood contribution")
 kable(sex_cond_model, booktabs = T, escape = F,
-      caption="Contributions to the likelihood function for the Sex Conditional Model for a sample of family compositions from the NLSY data.") %>% 
-  column_spec(1:2, width = "5cm") %>%
+      caption="Contributions to the likelihood function for the Sex Conditional Model for a sample of family compositions from the NLSY data.") |> 
+  column_spec(1:2, width = "5cm") |>
   kable_styling(full_width = F)
 ```
 
@@ -612,10 +612,10 @@ colnames(table8chp2) <- c("Family composition",
                           "Child 1", "Child 2", "Child 3")
 kable(table8chp2, booktabs = T, 
       caption = "Likelihood contributions for NLSY families in Sex Unconditional and Sex Conditional Models.",
-      escape=F) %>%
+      escape=F) |>
   add_header_above(c(" "," "," ", 
-                     "Sex Conditional Model" = 3)) %>%
-  kable_styling(latex_options = "scale_down") %>%
+                     "Sex Conditional Model" = 3)) |>
+  kable_styling(latex_options = "scale_down") |>
   row_spec(14, hline_after = T)
 ```
     
@@ -766,8 +766,8 @@ colnames(table9chp2) <- c("Family Composition",
                           "Likelihood Contribution",
                           " ")
 kable(table9chp2, booktabs = T, escape = F,
-      caption="Likelihood contributions for NLSY families in Model 3: Waiting for a boy.")%>%   
-  column_spec(1, width = "3cm") %>%
+      caption="Likelihood contributions for NLSY families in Model 3: Waiting for a boy.")|>   
+  column_spec(1, width = "3cm") |>
   kable_styling(latex_options = "scale_down")
 ```
 
@@ -794,8 +794,8 @@ colnames(table10chp2) <- c("Child is...",
                            "n.stops (n.families)",
                            "prop stopped after these children")
 kable(table10chp2, booktabs=T,
-      caption="Patterns related to stopping decisions.") %>%
-  column_spec(1:5, width = "3cm") %>%
+      caption="Patterns related to stopping decisions.") |>
+  column_spec(1:5, width = "3cm") |>
   kable_styling(latex_options = "scale_down")
 ```
 
@@ -824,7 +824,7 @@ Waitgirl <- c(-14715.65,29433.31,29440.58)
 tab1chp2 <- data.frame(Untcol,Waitboy,Waitgirl)
 colnames(tab1chp2) <- c(" ","Waiting for a boy","Waiting for a girl")
 kable(tab1chp2, booktabs=T, 
-      caption="Measures of model performance with NLSY data: Waiting for a Boy vs. Waiting for a Girl Model.") %>%
+      caption="Measures of model performance with NLSY data: Waiting for a Boy vs. Waiting for a Girl Model.") |>
   kable_styling(full_width = F)
 ```
 
@@ -937,7 +937,7 @@ kable(hothandchp2, booktabs = T,
       col.names = c("Game", "First 5 shots", 
                     "Likelihood (No Hot Hand)", 
                     "Likelihood (Hot Hand)"),
-      caption = "Data for Open-ended Exercise 2.  (B = made basket.  M = missed basket.)") %>% 
-  column_spec(1:4, width = "2cm") %>% 
+      caption = "Data for Open-ended Exercise 2.  (B = made basket.  M = missed basket.)") |> 
+  column_spec(1:4, width = "2cm") |> 
   kable_styling(latex_options = "scale_down")
 ```

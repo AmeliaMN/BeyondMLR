@@ -186,7 +186,7 @@ The first five rows from our data set `fHH1.csv` are illustrated in Table \@ref(
 - `roof` = the type of roof in the household (either Predominantly Light/Salvaged Material, or Predominantly Strong Material, where stronger material can sometimes be used as a proxy for greater wealth)
 
 ```{r, fHH1table1, echo=FALSE, comment=NA}
-headfHH1 <- fHH1 %>%
+headfHH1 <- fHH1 |>
   filter(row_number() < 6)
 kable(headfHH1, booktabs=T,
       caption="The first five observations from the Philippines Household case study.")
@@ -202,11 +202,11 @@ var(fHH1$total)
 
 prop.table(table(fHH1$roof))
 
-fHH1  %>% group_by(roof)  %>% 
+fHH1  |> group_by(roof)  |> 
   summarise(mean=mean(total), sd=sd(total), 
             var=var(total), n=n())
 
-fHH1  %>% group_by(location)  %>% 
+fHH1  |> group_by(location)  |> 
   summarise(mean=mean(total), sd=sd(total), 
             var=var(total), n=n())
 ```
@@ -241,11 +241,11 @@ For Poisson random variables, the variance of $Y$ (i.e., the square of the stand
 
 ```{r, table1chp4, echo=FALSE, message = FALSE}
 # Mean = Variance
-table1chp4<- ageGrps  %>% group_by(cuts)  %>% 
+table1chp4<- ageGrps  |> group_by(cuts)  |> 
   summarise(mnNum= mean(total),varNum=var(total),n=n())
 kable(table1chp4, booktabs=T, 
       caption="Compare mean and variance of household size within each age group.",
-      col.names = c("Age Groups", "Mean", "Variance", "n")) %>%
+      col.names = c("Age Groups", "Mean", "Variance", "n")) |>
   kable_styling(full_width = F)
 ```
 
@@ -255,7 +255,7 @@ The Poisson regression model also implies that log($\lambda_i$), not the mean ho
 
 ```{r, ageXnhouse,fig.align="center",out.width="60%",fig.cap= 'The log of the mean household sizes, besides the head of household, by age of the head of household, with loess smoother.', echo=FALSE, warning = FALSE, message = FALSE}
 ## Checking linearity assumption: Empirical log of the means plot
-sumStats <- fHH1 %>% group_by(age) %>% 
+sumStats <- fHH1 |> group_by(age) |> 
   summarise(mntotal = mean(total),
             logmntotal = log(mntotal), n=n())
 
@@ -269,7 +269,7 @@ ggplot(sumStats, aes(x=age, y=logmntotal)) +
 We can extend Figure \@ref(fig:ageXnhouse) by fitting separate curves for each region (see Figure \@ref(fig:byregion)).  This allows us to see if the relationship between mean household size and age is consistent across region.  In this case, the relationships are pretty similar; if they weren't, we could consider adding an age-by-region interaction to our eventual Poisson regression model.
 
 ```{r, byregion, fig.align="center", out.width="60%", fig.cap= 'Empirical log of the mean household sizes vs. age of the head of household, with loess smoother by region.', echo=FALSE, warning = FALSE, message = FALSE}
-sumStats2 <- fHH1 %>% group_by(age, location) %>% 
+sumStats2 <- fHH1 |> group_by(age, location) |> 
   summarise(mntotal = mean(total),
             logmntotal = log(mntotal), n=n())
 
@@ -444,7 +444,7 @@ To see this, match the terms in Equation \@ref(eq:poisLoglik) with those in Equa
 In Section \@ref(sec-Devtocompare), the Wald-type test and drop-in-deviance test both suggest that a linear term in age is useful.  But our exploratory data analysis in Section \@ref(exploreHH) suggests that a quadratic model might be more appropriate.  A quadratic model would allow us to see if there exists an age where the number in the house is, on average, a maximum. The output for a quadratic model appears below.
 
 ```{r, comment = NA}
-fHH1 <- fHH1 %>% mutate(age2 = age*age)
+fHH1 <- fHH1 |> mutate(age2 = age*age)
 modela2 = glm(total ~ age + age2, family = poisson, 
               data = fHH1)
 ```
@@ -710,7 +710,7 @@ Note that there is a noticeable outlier for a Southeastern school (5.4 violent c
 
 ```{r, include=FALSE, message=FALSE}
 # Combining the southern colleges and universities
-c.data <- c.data %>%
+c.data <- c.data |>
   mutate(region, region = fct_recode(region, 
                                      "S" = "SW", "S"="SE"))
 
@@ -718,12 +718,12 @@ c.data <- c.data %>%
 
 ```{r, table4ch4, echo=FALSE, message=FALSE}
 # Removing Outlier
-c.data <- c.data %>% 
+c.data <- c.data |> 
   filter(nvrate<5)
 
 # Checking mean=variance assumption 
-table4ch4 <- c.data %>%
-    group_by(region, type) %>%
+table4ch4 <- c.data |>
+    group_by(region, type) |>
     dplyr::summarize(MeanCount = mean(nv, na.rm=TRUE),
               VarCount = var(nv, na.rm=TRUE),
               MeanRate = mean(nvrate, na.rm=TRUE),
@@ -896,8 +896,8 @@ table1chp4 <- data.frame(label1, poisson1, quasi1)
 colnames(table1chp4) <- c(" ","Poisson", "quasi-Poisson")
 if (knitr:::is_latex_output()) {
   kable(table1chp4, booktabs = T, escape = F,
-        caption="Comparison of Poisson and quasi-Poisson inference.") %>%
-#  column_spec(1:3, width = "20em") %>%
+        caption="Comparison of Poisson and quasi-Poisson inference.") |>
+#  column_spec(1:3, width = "20em") |>
   kable_styling(latex_options = "scale_down")
 } else {
   kable(table1chp4, "html", booktabs = T, caption="Comparison of Poisson and quasi-Poisson inference.")
@@ -913,7 +913,7 @@ Mathematically, you can think of the negative binomial model as a Poisson model 
 Here is what happens if we apply a negative binomial regression model \index{negative binomial regression} to the interaction model, which we've already established suffers from overdispersion issues under regular Poisson regression:
 
 ```{r, include=FALSE}
-c.data2 <- c.data %>% 
+c.data2 <- c.data |> 
   mutate(enroll1000 = ifelse(enroll1000 < 1, 1, enroll1000))
 ```
 
@@ -946,11 +946,11 @@ names(zip.data)
 dim(zip.data)
 
 ## Observed data
-obs.table <- tally(group_by(zip.data, drinks))  %>%
+obs.table <- tally(group_by(zip.data, drinks))  |>
   mutate(prop=round(n/sum(n),3))
 obs.table  # 47% reported 0 drinks last weekend
 
-g.obs <- obs.table %>%
+g.obs <- obs.table |>
   ggplot(aes(y=prop,x=drinks)) + 
   geom_bar(stat="identity") +
   labs(x= "Number of drinks", y="Proportion") +
@@ -960,7 +960,7 @@ g.obs
 
 ## Poisson model
 ### lambda = mean number of drinks
-sum1 <- zip.data %>% 
+sum1 <- zip.data |> 
   summarise(lambda=mean(drinks),maxDrinks = max(drinks))
 possible.values = with(sum1,0:maxDrinks)
 model.prob <- with(sum1,dpois(possible.values,lambda))
@@ -985,18 +985,18 @@ Each line of `weekendDrinks.csv` contains data provided by a student in an intro
 
 ```{r, include=FALSE}
 # predictors: sex, dorm, off campus
-sex.table <- tally(group_by(zip.data, sex))  %>%
+sex.table <- tally(group_by(zip.data, sex))  |>
   mutate(prop=round(n/sum(n),3))
 sex.table
 
-dorm.table <- tally(group_by(zip.data, dorm))  %>%
+dorm.table <- tally(group_by(zip.data, dorm))  |>
   mutate(prop=round(n/sum(n),3))
 dorm.table
 
-zip.data <- zip.data %>% 
+zip.data <- zip.data |> 
   mutate(off.campus=ifelse(dorm=="off campus",1,0))
 
-off.table <- tally(group_by(zip.data, off.campus))  %>%
+off.table <- tally(group_by(zip.data, off.campus))  |>
   mutate(prop=round(n/sum(n),3))
 off.table
 
@@ -1008,9 +1008,9 @@ exp(coef(gmn.model))  # same as mean number of drinks for this simple model
 
 ```{r, 4verb19, comment=NA, include=FALSE}
 ## Fitting a Zero Inflated Poisson (ZIP) model
-zip.data <- zip.data %>% 
+zip.data <- zip.data |> 
   mutate(firstYear=dorm%in%c("kildahl","mohn","kittlesby"))
-fy.table <- tally(group_by(zip.data, firstYear))  %>%
+fy.table <- tally(group_by(zip.data, firstYear))  |>
   mutate(prop=round(n/sum(n),3))
 fy.table
 ```
@@ -1212,7 +1212,7 @@ Numdates <- c(3,5,0,0)
 tab2chp4 <- data.frame(Agecol,TimeOn,Numdates)
 colnames(tab2chp4) <- c("Age","Time Online","Number of Dates Arranged Online")
 kable(tab2chp4, booktabs=T,
-      caption="Sample data for Exercise 15.") %>%
+      caption="Sample data for Exercise 15.") |>
   kable_styling(full_width = F)
 ```
 
@@ -1231,8 +1231,8 @@ City <- c(1,1,"...",2,2)
 tab3chp4 <- data.frame(Numcases,Pop,Agegroup,City)
 colnames(tab3chp4) <- c("Number of Cases","Population","Age Group","City")
 kable(tab3chp4, booktabs=T,
-      caption="Data from Scotto et al. (1974) on the number of cases of non-melanoma skin cancer for women by age group in two metropolitan areas (Minneapolis-St. Paul and Dallas-Ft. Worth); the year is unknown.") %>%
-  kable_styling(full_width = F) %>%
+      caption="Data from Scotto et al. (1974) on the number of cases of non-melanoma skin cancer for women by age group in two metropolitan areas (Minneapolis-St. Paul and Dallas-Ft. Worth); the year is unknown.") |>
+  kable_styling(full_width = F) |>
   add_footnote(c("The columns contain: number of cases, population size, age group, and city (1=Minneapolis-St. Paul, 2=Dallas-Ft. Worth)."), notation = "none")
 ```
 
@@ -1286,8 +1286,8 @@ ex3chp4 <- data.frame(Subject, `X (0 = home, 1 = work)`,
                       `Y (number of cigarettes)`)
 kable(ex3chp4, booktabs=T, 
       caption="A small subset of hypothetical data on Minnesota workplace rules on smoking.",
-  col.names = c("Subject", "X (location)", "Y (cigarettes)")) %>%
-kable_styling(full_width = F) %>%
+  col.names = c("Subject", "X (location)", "Y (cigarettes)")) |>
+kable_styling(full_width = F) |>
 add_footnote(c("X is 0 for home and 1 for work.", "Y is number of cigaretttes in a 2-hour period."), notation = "none")
 ```
 

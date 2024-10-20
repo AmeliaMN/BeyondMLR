@@ -89,11 +89,11 @@ chart.wide = read_csv("data/chart_wide_condense.csv")
 table1chp9 <- head(chart.wide[2:11])
 
 kable(table1chp9, booktabs=T,
-      caption = "The first six observations in the wide data set for the Charter Schools case study.") %>%
+      caption = "The first six observations in the wide data set for the Charter Schools case study.") |>
     kable_styling(latex_options = "scale_down", font_size = 9)
 
 #ifelse(knitr::is_html_output(),
-#       kab1chp9 %>% scroll_box(width="100%"), kab1chp9)
+#       kab1chp9 |> scroll_box(width="100%"), kab1chp9)
 ```
 
 For most statistical analyses, it will be advantageous to convert WIDE format to LONG format, with one row per year per school.  To make this conversion, we will have to create a time variable, which under the LONG format is very flexible---each school can have a different number of and differently-spaced time points, and they can even have predictors which vary over time.  Details for making this conversion can be found in the R Markdown code for this chapter, and the form of the LONG data in this study is exhibited in the next section.
@@ -109,7 +109,7 @@ The number of schools with a particular missing data pattern are listed in the l
 ```{r table2chp9,echo=FALSE, warning=FALSE}
 table2chp9 <- md.pattern(chart.wide[c(5,9,10,11)], plot=FALSE)
 kable(table2chp9, booktabs=T, 
-  caption="A frequency table of missing data patterns.") %>%
+  caption="A frequency table of missing data patterns.") |>
   kable_styling(latex_options = "scale_down")
 ```
 
@@ -127,12 +127,12 @@ Now, we are ready to create our LONG data set. Fortunately, many packages (inclu
 # Create data frame in LONG form (one obs per school-year)
 #   chart.long is 1854x10 with 121 NAs for MathAvgScore
 select <- dplyr::select
-chart.long <- chart.wide %>%
+chart.long <- chart.wide |>
   gather(key = "key", value = "MathAvgScore",
-         MathAvgScore.0:MathAvgScore.2) %>%
-  separate(key, into = c("name", "year08"), sep = "\\.") %>%
-  select(-c("...1", "name")) %>%
-  arrange(schoolid, year08) %>%
+         MathAvgScore.0:MathAvgScore.2) |>
+  separate(key, into = c("name", "year08"), sep = "\\.") |>
+  select(-c("...1", "name")) |>
+  arrange(schoolid, year08) |>
   mutate(year08 = as.numeric(year08))
 head(chart.long)
 
@@ -146,7 +146,7 @@ head(smallchart.long)
 ```{r table3chp9,echo=FALSE}
 table3chp9 <- head(smallchart.long[,c(2,4,6,7,8,9)])
 kable(table3chp9, booktabs=T,
-      caption= "The first six observations in the long data set for the Charter Schools case study; these lines correspond to the first two observations from the wide data set illustrated in Table (ref:caplontable3chp9).") %>%
+      caption= "The first six observations in the long data set for the Charter Schools case study; these lines correspond to the first two observations from the wide data set illustrated in Table (ref:caplontable3chp9).") |>
       kable_styling(latex_options = "scale_down")
 ```
 
@@ -166,33 +166,33 @@ Figure \@ref(fig:lon-hist1) shows the distribution of MCA math test scores as so
 ```{r,include=FALSE, warning=FALSE}
 #Getting started-3
 # Add average across all years for each school for EDA plots
-chart.means <- chart.long %>%
-  group_by(schoolid) %>%
+chart.means <- chart.long |>
+  group_by(schoolid) |>
   summarise(mean3yr = mean(MathAvgScore, na.rm=T))
-chart.wide <- chart.wide %>%
+chart.wide <- chart.wide |>
   mutate(urban0 = ifelse(urban==1, "urban", "rural"),
          charter0 = ifelse(charter==1, "charter", 
-                           "public non-charter")) %>%
+                           "public non-charter")) |>
   left_join(chart.means, by="schoolid")
 
-wide.charter <- chart.wide %>% filter(charter == 1)
+wide.charter <- chart.wide |> filter(charter == 1)
 set.seed(27)  #pulls same random sample every time
 samp = sample(1:length(chart.wide$charter==0), size=dim(wide.charter)[1])
 samp   # getting equal number of charters and non-charters
 
-wide.public <- chart.wide %>%
-  filter(charter == 0) %>%
+wide.public <- chart.wide |>
+  filter(charter == 0) |>
   sample_n( dim(wide.charter)[1] )
-sampdata <- bind_rows(wide.charter, wide.public) %>%
-  select(-`...1`) %>%
+sampdata <- bind_rows(wide.charter, wide.public) |>
+  select(-`...1`) |>
   mutate(vars = row_number())   # Just use numbers 1-146 as school ids
 head(sampdata)
 
-sampdata.l <- sampdata %>%
-  gather(key = "key", value = "MathAvgScore", MathAvgScore.0:MathAvgScore.2) %>%
-  separate(key, into = c("name", "year08"), sep = "\\.") %>%
-  select(-name) %>%
-  arrange(charter, vars, year08) %>%
+sampdata.l <- sampdata |>
+  gather(key = "key", value = "MathAvgScore", MathAvgScore.0:MathAvgScore.2) |>
+  separate(key, into = c("name", "year08"), sep = "\\.") |>
+  select(-name) |>
+  arrange(charter, vars, year08) |>
   mutate(year08 = as.numeric(year08))
 head(sampdata.l)
 
@@ -203,8 +203,8 @@ theme.1 <- theme(axis.title.x = element_text(size = 14),
 ###EDA###
 # table(chart.wide$charter0)
 # table(chart.wide$urban0)
-chart.wide %>% count(charter0)
-chart.wide %>% count(urban0)
+chart.wide |> count(charter0)
+chart.wide |> count(urban0)
 ```
 
 ```{r, lon-hist1, fig.align="center",out.width="60%",fig.cap='Histogram of mean sixth grade MCA math test scores over the years 2008-2010 for 618 Minnesota schools.',echo=FALSE, warning=FALSE}
@@ -218,7 +218,7 @@ ggplot(data=chart.wide,aes(x=mean3yr)) +
 ```{r, include=FALSE, warning=FALSE}
 #summaries (charter vs. non-charter) - 1 obs per school
 # tapply(chart.wide$mean3yr, chart.wide$charter, summary)
-chart.wide %>% group_by(charter0) %>%
+chart.wide |> group_by(charter0) |>
   summarise(means = mean(mean3yr), 
             sds = sd(mean3yr), 
             meds = median(mean3yr),
@@ -228,7 +228,7 @@ chart.wide %>% group_by(charter0) %>%
             maxs = max(mean3yr), ns = n())
 
 #summaries (urban vs. rural)
-chart.wide %>% group_by(urban0) %>%
+chart.wide |> group_by(urban0) |>
   summarise(means = mean(mean3yr), 
             sds = sd(mean3yr), 
             meds = median(mean3yr),
@@ -260,12 +260,12 @@ grid.arrange(charter.school,urban.school,ncol=1,nrow=2)
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 #Changing percentage scale to 0 to 100
-chart.long <- chart.long %>%
+chart.long <- chart.long |>
   mutate(SchPctFree = schPctfree*100, 
          SchPctSped = schPctsped*100,
          SchPctNonw = schPctnonw*100)
 
-chart.wide <- chart.wide %>%
+chart.wide <- chart.wide |>
   mutate(SchPctFree.wide = schPctfree*100, 
          SchPctSped.wide = schPctsped*100, 
          SchPctNonw.wide = schPctnonw*100)
@@ -345,7 +345,7 @@ ggplot(smallchart.long, aes(x = year08, y = MathAvgScore)) +
 ##Spaghetti Plots
 
 #get rid of NA data
-newsampdata.l <- sampdata.l %>% na.omit()
+newsampdata.l <- sampdata.l |> na.omit()
 ```
 
 ```{r, lon-spag3, fig.align="center",out.width="60%",fig.cap='Spaghetti plots showing time trends for each school by school type, for a random sample of charter schools (left) and public non-charter schools (right), with overall fits using loess (bold).',echo=FALSE, warning=FALSE, message=FALSE}
@@ -357,7 +357,7 @@ ggplot(newsampdata.l, aes(x = year08, y = MathAvgScore)) +
 ```
 
 ```{r, include=FALSE, warning=FALSE}
-newsampdata.l <- newsampdata.l %>%
+newsampdata.l <- newsampdata.l |>
   mutate(splitup = paste("Quartile", 
                          as.numeric(cut2(schPctfree, g=4))))
 ```
@@ -384,35 +384,35 @@ Another advantage of assuming a linear trend at Level One (within schools) is th
 
 ```{r, include=FALSE, warning=FALSE}
 #95% CI's for slope and intercept of 24 schools	(2 are filtered out since 1 obs)		
-regressions <- smallchart.long %>%
-  group_by(schoolid) %>%
+regressions <- smallchart.long |>
+  group_by(schoolid) |>
   do(tidy(lm(MathAvgScore ~ year08, data=.)))
 
-sd_filter <- smallchart.long %>%
-  group_by(schoolid) %>%
+sd_filter <- smallchart.long |>
+  group_by(schoolid) |>
   summarise(sds = sd(MathAvgScore)) 
 
-regressions <- regressions %>%
-  right_join(sd_filter, by="schoolid") %>%
+regressions <- regressions |>
+  right_join(sd_filter, by="schoolid") |>
   filter(!is.na(sds))
 
-lm_info1 <- regressions %>%
-  select(schoolid, term, estimate) %>%
-  spread(key = term, value = estimate) %>%
+lm_info1 <- regressions |>
+  select(schoolid, term, estimate) |>
+  spread(key = term, value = estimate) |>
   rename(rate = year08, int = `(Intercept)`)
 
-lm_info2 <- regressions %>%
-  select(schoolid, term, std.error) %>%
-  spread(key = term, value = std.error) %>%
+lm_info2 <- regressions |>
+  select(schoolid, term, std.error) |>
+  spread(key = term, value = std.error) |>
   rename(se_rate = year08, se_int = `(Intercept)`)
 
-lm_info <- smallchart.long %>%
-  group_by(schoolid) %>%
-  do(glance(lm(MathAvgScore ~ year08, data=.))) %>%
-  ungroup() %>%
-  select(schoolid, r.squared, df.residual) %>%
-  inner_join(lm_info1, by = "schoolid") %>%
-  inner_join(lm_info2, by = "schoolid") %>%
+lm_info <- smallchart.long |>
+  group_by(schoolid) |>
+  do(glance(lm(MathAvgScore ~ year08, data=.))) |>
+  ungroup() |>
+  select(schoolid, r.squared, df.residual) |>
+  inner_join(lm_info1, by = "schoolid") |>
+  inner_join(lm_info2, by = "schoolid") |>
   mutate(tstar = qt(.975, df.residual), 
          intlb = int - tstar * se_int, 
          intub = int + tstar * se_int,
@@ -442,35 +442,35 @@ grid.arrange(slope.ci,int.ci,ncol=2)
 
 ```{r, include=FALSE, warning=FALSE}
 # Find slope and intercept of all 618 schools	(540 after filter those with 1 obs)		
-regressions <- chart.long %>% 
-  group_by(schoolid) %>% 
+regressions <- chart.long |> 
+  group_by(schoolid) |> 
   do(tidy(lm(MathAvgScore ~ year08, data=.)))
 
-sd_filter <- chart.long %>%
-  group_by(schoolid) %>%
+sd_filter <- chart.long |>
+  group_by(schoolid) |>
   summarise(sds = sd(MathAvgScore)) 
 
-regressions <- regressions %>%
-  right_join(sd_filter, by="schoolid") %>%
+regressions <- regressions |>
+  right_join(sd_filter, by="schoolid") |>
   filter(!is.na(sds))
 
-lm_info1 <- regressions %>%
-  select(schoolid, term, estimate) %>%
-  spread(key = term, value = estimate) %>%
+lm_info1 <- regressions |>
+  select(schoolid, term, estimate) |>
+  spread(key = term, value = estimate) |>
   rename(rate = year08, int = `(Intercept)`)
 
-lm_info2 <- regressions %>%
-  select(schoolid, term, std.error) %>%
-  spread(key = term, value = std.error) %>%
+lm_info2 <- regressions |>
+  select(schoolid, term, std.error) |>
+  spread(key = term, value = std.error) |>
   rename(se_rate = year08, se_int = `(Intercept)`)
 
-lm_info <- chart.long %>%
-  group_by(schoolid) %>%
-  do(glance(lm(MathAvgScore ~ year08, data=.))) %>%
-  ungroup() %>%
-  select(schoolid, r.squared, df.residual) %>%
-  inner_join(lm_info1, by = "schoolid") %>%
-  inner_join(lm_info2, by = "schoolid") %>%
+lm_info <- chart.long |>
+  group_by(schoolid) |>
+  do(glance(lm(MathAvgScore ~ year08, data=.))) |>
+  ungroup() |>
+  select(schoolid, r.squared, df.residual) |>
+  inner_join(lm_info1, by = "schoolid") |>
+  inner_join(lm_info2, by = "schoolid") |>
   mutate(tstar = qt(.975, df.residual), 
          intlb = int - tstar * se_int, 
          intub = int + tstar * se_int,
@@ -534,8 +534,8 @@ Figure \@ref(fig:lon-box2) shows differences in the average time trends by schoo
 	
 ```{r, include=FALSE, warning=FALSE}
 # Boxplots to compare school types
-chart.wide <- lm_info %>%
-  select(schoolid, int, rate , r.squared) %>%
+chart.wide <- lm_info |>
+  select(schoolid, int, rate , r.squared) |>
   right_join(chart.wide, by = "schoolid")
 
 #lon-box2.eps
@@ -558,13 +558,13 @@ grid.arrange(int.box1,rate.box1,nrow=2)
 
 ```{r, include=FALSE, warning=FALSE}
 #lon-box3.eps
-year08.box <- chart.long %>% filter(year08 == 0) %>%
+year08.box <- chart.long |> filter(year08 == 0) |>
   ggplot() + 
   geom_boxplot(aes(x = factor(charter), y = MathAvgScore)) + 
   theme.1 + coord_flip() + 
   labs(x="School Type", y="Math Score in 2008", title="(a)")
 
-year10.box <- chart.long %>% filter(year08 == 2) %>%
+year10.box <- chart.long |> filter(year08 == 2) |>
   ggplot() + 
   geom_boxplot(aes(x = factor(charter), y = MathAvgScore)) + 
   theme.1 + coord_flip() + 
@@ -616,7 +616,7 @@ grid.arrange(box1,int.scat1,rate.scat1,ncol=2)
 with(chart.wide, cor( cbind( schPctnonw, int, rate),
                       use="pairwise.complete.obs"))
 medpctfree <- median(chart.wide$schPctfree)
-chart.wide <- chart.wide %>%
+chart.wide <- chart.wide |>
   mutate(highpctfree = ifelse(schPctfree > medpctfree,
                               "High Pct Free/Reduced Lunch",
                               "Low Pct Free/Reduced Lunch"))
@@ -652,16 +652,16 @@ where $\hat{Y}_{ij}$ is the predicted math score of the $i^{th}$ school at time 
 
 ```{r, include=FALSE, warning=FALSE}
 ##Correlation structure	
-score.nonm <- chart.long %>%
+score.nonm <- chart.long |>
   filter(is.na(MathAvgScore) == FALSE)
 hgtm.lm <- lm(MathAvgScore~year08, data=score.nonm)
-score.nonm <- score.nonm %>%
+score.nonm <- score.nonm |>
   mutate(lmres = resid(hgtm.lm))
 
-hgtwm <- score.nonm %>%
-  select(schoolid, lmres, year08) %>%
-  mutate(name = rep("lmres", n())) %>%
-  unite(newcol, name, year08, sep = ".") %>%
+hgtwm <- score.nonm |>
+  select(schoolid, lmres, year08) |>
+  mutate(name = rep("lmres", n())) |>
+  unite(newcol, name, year08, sep = ".") |>
   spread(key = newcol, value = lmres)
 ```
 
@@ -737,7 +737,7 @@ The parameters in this model $(a_{i}, b_{i},$ and $\sigma^2)$ can be estimated t
 
 ```{r, lon-scat3, fig.align="center",out.width="60%",fig.cap='Linear growth model for Norwood Central Middle School.',echo=FALSE, message=FALSE, warning=FALSE}
 #lon-scat3.eps
-Norwood <- chart.long %>% slice(7:9)
+Norwood <- chart.long |> slice(7:9)
 model0 <- lm(MathAvgScore ~ year08, data = Norwood)
 ggplot(Norwood, aes(x = year08, y = MathAvgScore)) + 
   theme.1 + geom_point() + 
@@ -862,7 +862,7 @@ c_{i} & = \gamma_{0}
 where $u_{i}\sim N(0,\sigma^2_u)$.  Models like this are frequently used in practice---they allow for a separate overall effect on test scores for each school, while minimizing parameters that must be estimated.  The tradeoff is that this model does not allow linear and quadratic effects to differ by school, but we have little choice here without more observations per school.  Thus, using the composite model specification, the unconditional quadratic growth model with random intercept for each school can be fit to the MCA-II test data:
 
 ```{r include=FALSE}
-chart.long <- chart.long %>%
+chart.long <- chart.long |>
   mutate(yearc = year08 - 1, yearc2 = yearc ^ 2)
 
 #Model B1 (Unconditional growth but only random intercepts)
@@ -898,7 +898,7 @@ Another frequently used approach to modeling time effects is the **piecewise lin
 ```{r include=FALSE}
 # Modeling piecewise linear time trend with 3 time points
 #   (won't work in general)
-chart.long <- chart.long %>%
+chart.long <- chart.long |>
   mutate(year0809 = ifelse(year08==1, 1, 0),
          year0810 = ifelse(year08==2, 1, 0))
 
@@ -1475,7 +1475,7 @@ Let's see how new test scores are generated under the parametric bootstrap. Cons
 ```{r rippleside, echo=FALSE}
 school1 <- chart.long[1:3, c(2:4,6:9)]
 kable(school1, booktabs=T, 
-      caption = "Original data for Rippleside Elementary (School 1).") %>%
+      caption = "Original data for Rippleside Elementary (School 1).") |>
       kable_styling(latex_options = "scale_down")
 ```
 
@@ -1956,8 +1956,8 @@ SE <- c(" ", ".160",".026",".289",".252",".050",".088",".082"," ",".030",".005",
 table4chp9 <- data.frame(Predictor, Gammafiller, SE)
 colnames(table4chp9) <- c("Predictor","Coefficient", "SE")
 temp <- kable(table4chp9, booktabs=T, escape=F, 
-      caption="A portion of Table 2: Results of Hierarchical Linear Modeling Analyses Modeling Gang Involvement from Walker-Barnes and Mason (2001).") %>%
-  row_spec(c(1,9), bold=T) %>%
+      caption="A portion of Table 2: Results of Hierarchical Linear Modeling Analyses Modeling Gang Involvement from Walker-Barnes and Mason (2001).") |>
+  row_spec(c(1,9), bold=T) |>
   kable_styling(full_width = F)
 
 footnote(temp, 

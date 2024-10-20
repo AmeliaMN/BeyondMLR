@@ -145,15 +145,15 @@ remotes::install_version(package = "broom", version = "0.5.6")
 
 ```{r, echo=FALSE}
 library(tidyverse)
-package_info(needed_pkgs) %>% 
-  as_tibble() %>% 
-  filter(attached == TRUE) %>% 
-  dplyr::select(package, version = ondiskversion) %>% 
+package_info(needed_pkgs) |> 
+  as_tibble() |> 
+  filter(attached == TRUE) |> 
+  dplyr::select(package, version = ondiskversion) |> 
   kable(
     booktabs = TRUE, 
     linesep = "",
     longtable = TRUE,
     col.names = c("R package", "Version used")
-  ) %>% 
+  ) |> 
   kable_styling(font_size = ifelse(is_latex_output(), 9, 16))
 ```

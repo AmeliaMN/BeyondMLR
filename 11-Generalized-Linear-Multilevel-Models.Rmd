@@ -92,15 +92,15 @@ head(refdata)       # examine first 6 rows
 
 ```{r, echo=FALSE, warning=FALSE}
 # Illustrate long data
-#table1chp11 <- data.frame(refdata %>% slice(1:10) %>%
+#table1chp11 <- data.frame(refdata |> slice(1:10) |>
 #  dplyr::select(., 2, 4, 5, 6, 7, 9, 10, 12, 15, 19))
 
 #if(knitr::is_html_output()){
-#  kable(table1chp11) %>%
-#    kable_styling(bootstrap_options = c("striped")) %>%
+#  kable(table1chp11) |>
+#    kable_styling(bootstrap_options = c("striped")) |>
 #    scroll_box(width = "100%")
 #} else{
-#  kable(table1chp11) %>%
+#  kable(table1chp11) |>
 #    kable_styling(bootstrap_options = c("striped")) 
 #}
 
@@ -110,11 +110,11 @@ head(refdata)       # examine first 6 rows
 
 ```{r table1chp11, echo=FALSE, warning=FALSE}
 # Illustrate long data
-table1chp11 <- data.frame(refdata %>% slice(1:10) %>%
+table1chp11 <- data.frame(refdata |> slice(1:10) |>
   dplyr::select(., 2, 4, 5, 6, 7, 9, 10, 12, 15, 19))
 
 kable(table1chp11, booktabs=T, 
-      caption="Key variables from the first 10 rows of data from the College Basketball Referees Case Study.  Each row represents a different foul called; we see all 8 first-half fouls from Game 1 followed by the first 2 fouls called in Game 2.") %>%
+      caption="Key variables from the first 10 rows of data from the College Basketball Referees Case Study.  Each row represents a different foul called; we see all 8 first-half fouls from Game 1 followed by the first 2 fouls called in Game 2.") |>
       kable_styling(latex_options = "scale_down", font_size = 9)
 ```
 
@@ -175,7 +175,7 @@ table2chp11 <- data.frame(three, homet, homes, visitt,
                           visits, Difft, Diffs)
 colnames(table2chp11) <- c(" ", "Team", "Fouls", "Team", 
                            "Fouls", "Team", "Fouls")
-kable(table2chp11, booktabs=T, caption=" Average total number of fouls in the first half over all games in which a particular team is home or visitor.  The left columns show the top 3 and bottom 3 teams according to total number of fouls (on both teams) in first halves of games in which they are the home team.  The middle columns correspond to games in which the listed teams are the visitors, and the right columns show the largest differences (in both directions) between total fouls in games in which a team is home or visitor.") %>%
+kable(table2chp11, booktabs=T, caption=" Average total number of fouls in the first half over all games in which a particular team is home or visitor.  The left columns show the top 3 and bottom 3 teams according to total number of fouls (on both teams) in first halves of games in which they are the home team.  The middle columns correspond to games in which the listed teams are the visitors, and the right columns show the largest differences (in both directions) between total fouls in games in which a team is home or visitor.") |>
   add_header_above(c(" ","Home"=2,"Visitor"=2, "Difference"=2))
 ```
 
@@ -193,40 +193,40 @@ with(refdata, sd(time))
 with(refdata, sd(score.diff))
 with(refdata, sd(foul.diff))
 
-refdata %>% count(foul.home) %>% 
+refdata |> count(foul.home) |> 
   mutate(prop = n/sum(n))
-refdata %>% count(lead.home) %>% 
+refdata |> count(lead.home) |> 
   mutate(prop = n/sum(n)) 
-refdata %>% count(previous.foul.home) %>% 
+refdata |> count(previous.foul.home) |> 
   mutate(prop = n/sum(n)) 
-refdata %>% count(foul.type) %>% 
+refdata |> count(foul.type) |> 
   mutate(prop = n/sum(n)) 
 
 # There are no Level 2 covariates other than Home and 
 #   Visiting Team.  Tables below give overall summary of 
 #   which teams called for more fouls.
-f1 <- refdata %>% count(hometeam) %>% 
-  mutate(prop = n/sum(n)) %>%
+f1 <- refdata |> count(hometeam) |> 
+  mutate(prop = n/sum(n)) |>
   rename(n_fouls = n)
 f1
-f2 <- refdata %>% count(visitor) %>% 
-  mutate(prop = n/sum(n)) %>%
+f2 <- refdata |> count(visitor) |> 
+  mutate(prop = n/sum(n)) |>
   rename(n_fouls = n)
 f2
 table(refdata$hometeam)
 table(refdata$visitor)
 
 #   These tables tell how many games each team appears in.
-onepergame <- refdata %>%
-  group_by(game) %>%
-  filter(row_number() == 1) %>%
+onepergame <- refdata |>
+  group_by(game) |>
+  filter(row_number() == 1) |>
   ungroup
-p1 <- onepergame %>% count(hometeam) %>% 
-  mutate(prop = n/sum(n)) %>%
+p1 <- onepergame |> count(hometeam) |> 
+  mutate(prop = n/sum(n)) |>
   rename(n_games = n)
 print(p1, n = Inf)
-p2 <- onepergame %>% count(visitor) %>% 
-  dplyr::mutate(prop = n/sum(n)) %>%
+p2 <- onepergame |> count(visitor) |> 
+  dplyr::mutate(prop = n/sum(n)) |>
   rename(n_games = n)
 print(p2, n = Inf)
 table(onepergame$hometeam)
@@ -235,25 +235,25 @@ table(onepergame$visitor)
 # These tables tell average total fouls for both teams 
 #   in the first half of games where a certain team is 
 #   home or visitor
-allhome <- p1 %>%
-  inner_join(f1, by = "hometeam") %>%
-  dplyr::mutate(fouls_per_game = n_fouls / n_games) %>%
+allhome <- p1 |>
+  inner_join(f1, by = "hometeam") |>
+  dplyr::mutate(fouls_per_game = n_fouls / n_games) |>
   arrange(desc(fouls_per_game))
 print(allhome, n = Inf)
 
-allvis <- p2 %>%
-  inner_join(f2, by = "visitor") %>%
-  dplyr::mutate(fouls_per_game = n_fouls / n_games) %>%
+allvis <- p2 |>
+  inner_join(f2, by = "visitor") |>
+  dplyr::mutate(fouls_per_game = n_fouls / n_games) |>
   arrange(desc(fouls_per_game))
 print(allvis, n = Inf)
 
-allboth <- allhome %>%
-  rename(team = hometeam, home_fouls = fouls_per_game) %>%
-  dplyr::select(team, home_fouls) %>%
-  inner_join(allvis, by = c("team" = "visitor")) %>%
-  dplyr::select(team, home_fouls, fouls_per_game) %>%
-  rename(visitor_fouls = fouls_per_game) %>%
-  dplyr::mutate(diff = home_fouls - visitor_fouls) %>%
+allboth <- allhome |>
+  rename(team = hometeam, home_fouls = fouls_per_game) |>
+  dplyr::select(team, home_fouls) |>
+  inner_join(allvis, by = c("team" = "visitor")) |>
+  dplyr::select(team, home_fouls, fouls_per_game) |>
+  rename(visitor_fouls = fouls_per_game) |>
+  dplyr::mutate(diff = home_fouls - visitor_fouls) |>
   arrange(desc(diff))
 print(allboth, n = Inf)
 
@@ -275,15 +275,15 @@ with(refdata, by(foul.diff, foul.home, summary))
 # Find empirical logits and proportions by grouping fouls 
 # by foul.diff.  First remove foul.diff=-8 or 6, since not 
 # enough data
-foo1 <- refdata %>%
+foo1 <- refdata |>
   filter(foul.diff >= -7 & foul.diff <= 5)
 
-foo1 %>% count(foul.diff, foul.home)
+foo1 |> count(foul.diff, foul.home)
 table(foo1$foul.home, foo1$foul.diff)
 
-foul.df <- foo1 %>%
-  group_by(foul.diff) %>%
-  summarise(foul.phats = mean(foul.home)) %>%
+foul.df <- foo1 |>
+  group_by(foul.diff) |>
+  summarise(foul.phats = mean(foul.home)) |>
   mutate(foul.elogits = log(foul.phats/(1 - foul.phats)) )
 print(foul.df)
 
@@ -297,15 +297,15 @@ summary(model0)
 
 # Repeat by grouping fouls by score.diff.  First remove
 #   score.diff<=-12 or >=19, since not enough data
-foo1 <- refdata %>%
+foo1 <- refdata |>
   filter(score.diff >= -11 & score.diff <= 18)
 
-foo1 %>% count(score.diff, foul.home)
+foo1 |> count(score.diff, foul.home)
 table(foo1$foul.home, foo1$score.diff)
 
-score.df <- foo1 %>%
-  group_by(score.diff) %>%
-  summarise(score.phats = mean(foul.home)) %>%
+score.df <- foo1 |>
+  group_by(score.diff) |>
+  summarise(score.phats = mean(foul.home)) |>
   mutate(score.elogits = log(score.phats/(1 - score.phats)) )
 print(score.df)
 
@@ -320,19 +320,19 @@ summary(model0)
 
 # Repeat by grouping fouls by time remaining
 #   Must group in intervals since time truly continuous
-foo1 <- refdata %>% 
+foo1 <- refdata |> 
   mutate(group = cut(time, 
     breaks = c(-Inf, 2, 4, 6, 8, 10, 12, 14, 16, 18, Inf),
-    labels = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19))) %>%
-  mutate(times = as.numeric(levels(group))[group]) %>%
+    labels = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19))) |>
+  mutate(times = as.numeric(levels(group))[group]) |>
   select(-group)
 
-foo1 %>% count(times, foul.home)
+foo1 |> count(times, foul.home)
 table(foo1$foul.home, foo1$times)
 
-time.df <- foo1 %>%
-  group_by(times) %>%
-  summarise(time.phats = mean(foul.home)) %>%
+time.df <- foo1 |>
+  group_by(times) |>
+  summarise(time.phats = mean(foul.home)) |>
   mutate(time.elogits = log(time.phats/(1 - time.phats)) )
 print(time.df)
 
@@ -344,7 +344,7 @@ ggplot(data = time.df, aes(x = times, y = time.elogits)) +
 model0 = lm(time.elogits ~ times, data = time.df)
 summary(model0)
 
-refdata <- refdata %>%
+refdata <- refdata |>
   mutate(foul.factor = as.factor(ifelse(foul.home == 1, 
                                         "Home", "Visitor")) )
 ```
@@ -411,9 +411,9 @@ grid.arrange(foul.cd, score.cd, time.cd,
 The mosaic plots in Figure \@ref(fig:gmu-barmat1) examine categorical Level One covariates, indicating that fouls were more likely to be called on the home team when the home team was leading, when the previous foul was on the visiting team, and when the foul was a personal foul rather than a shooting foul or an offensive foul.  A total of 51.8\% of calls go against the home team when it is leading the game, compared to only 42.9\% of calls when it is behind; 51.3\% of calls go against the home team when the previous foul went against the visitors, compared to only 43.8\% of calls when the previous foul went against the home team; and, 49.2\% of personal fouls are called against the home team, compared to only 46.9\% of shooting fouls and 45.7\% of offensive fouls.  Eventually we will want to examine the relationship between foul type (personal, shooting, or offensive) and foul differential, examining our hypothesis that the tendency to even out calls will be even stronger for calls over which the referees have greater control (personal fouls and especially offensive fouls).
 
 ```{r, include=FALSE}
-refdata <- refdata %>%
+refdata <- refdata |>
   mutate(leadyes = ifelse(lead.home == 0, "No", "Yes"),
-    prevyes = ifelse(previous.foul.home == 0, "No", "Yes")) %>%
+    prevyes = ifelse(previous.foul.home == 0, "No", "Yes")) |>
   rename(whofoul = foul.factor)
 
 barplot1 <- ggplot(data = refdata) +
@@ -474,13 +474,13 @@ As we saw in Section \@ref(twostage), to avoid clustering we could consider fitt
 
 ```{r, table3chp11, echo=FALSE, warning=FALSE}
 # Model for Game 110 only (foul.diff as sole predictor)
-game110 <- refdata %>% 
-  filter(game == 110) %>%   # pick off data for Game 110
+game110 <- refdata |> 
+  filter(game == 110) |>   # pick off data for Game 110
   select(.,4, 5, 6, 7, 9, 10, 15, 19)     
   # took out 2 and 12 - too wide
 
 kable(game110, booktabs=T, 
-      caption="Key variables from the March 3, 2010, game featuring Virginia at Boston College (Game 110).") %>%
+      caption="Key variables from the March 3, 2010, game featuring Virginia at Boston College (Game 110).") |>
       kable_styling(latex_options = "scale_down")
 ```
 
@@ -515,14 +515,14 @@ As in Section \@ref(twostage), we can proceed to fit similar logistic regression
 ```{r, include=FALSE}
 # Examine intercepts and slopes by game for model 
 #   with foul.diff as only predictor
-regressions <- refdata %>% 
-  group_by(game) %>% 
+regressions <- refdata |> 
+  group_by(game) |> 
   do(tidy(glm(foul.home ~ foul.diff, family = binomial, 
                data = .)))
 
-glm_info <- regressions %>%
-  dplyr::select(game, term, estimate) %>%
-  spread(key = term, value = estimate) %>%
+glm_info <- regressions |>
+  dplyr::select(game, term, estimate) |>
+  spread(key = term, value = estimate) |>
   rename(rate = foul.diff, int = `(Intercept)`)
 
 # Descriptive statistics of the estimates obtained by 
@@ -598,7 +598,7 @@ Again, we can use statistical software to obtain parameter estimates for this un
 #   sole predictor)
 
 # pick off data when BC at home
-bc.home = refdata %>% filter(hometeam == "BC") 
+bc.home = refdata |> filter(hometeam == "BC") 
 dim(bc.home)
 lreg.bchm <- glm(foul.home ~ foul.diff, family = binomial, 
                 data = bc.home)
@@ -618,14 +618,14 @@ rate <- by(refdata, refdata$hometeam, function(data)
            family=binomial,data=data))[[2]])
 summary(rate)
 
-regressions <- refdata %>% 
-  group_by(hometeam) %>% 
+regressions <- refdata |> 
+  group_by(hometeam) |> 
   do(tidy(glm(foul.home ~ foul.diff, family = binomial, 
                data = .)))
 
-glm_info <- regressions %>%
-  dplyr::select(hometeam, term, estimate) %>%
-  spread(key = term, value = estimate) %>%
+glm_info <- regressions |>
+  dplyr::select(hometeam, term, estimate) |>
+  spread(key = term, value = estimate) |>
   rename(rate = foul.diff, int = `(Intercept)`)
 
 # Descriptive statistics of the estimates obtained by 
@@ -1235,11 +1235,11 @@ Pvalcol <- c("<0.01", " ", "<0.01", " ", " ", " ", " ", " ", "<0.01", " ", "<0.0
 table4chp11 <- data.frame(blnkcol, RR, CI95, Pvalcol)
 colnames(table4chp11) <- c(" ", "RR", "95% CI", "p-Value")
 kable(table4chp11, booktabs=T,
-      caption="Adjusted rate ratios for individual-level variables from the multilevel Poisson regression model with random intercept for area from Table 2 in Randall et al. (2014).") %>%
-  pack_rows("Aboriginal", 1, 2) %>%
-  pack_rows("Age Group", 3, 8) %>%
-  pack_rows("Sex", 9, 10) %>%
-  pack_rows("Year", 11, 16) %>%
+      caption="Adjusted rate ratios for individual-level variables from the multilevel Poisson regression model with random intercept for area from Table 2 in Randall et al. (2014).") |>
+  pack_rows("Aboriginal", 1, 2) |>
+  pack_rows("Age Group", 3, 8) |>
+  pack_rows("Sex", 9, 10) |>
+  pack_rows("Year", 11, 16) |>
   kable_styling(full_width = F)
 ```
 
@@ -1266,9 +1266,9 @@ Pvalcol2 <- c("<0.01"," "," "," ","<0.01"," "," "," "," ")
 table5chp11 <- data.frame(blnkcol2,RR2,CI952,Pvalcol2)
 colnames(table5chp11) <- c(" ","RR","95% CI","p-Value")
 kable(table5chp11, booktabs=T,
-      caption="Adjusted rate ratios for area-level variables from the multilevel Poisson regression model with random intercept for area from Table 3 in Randall et al. (2014).  Area-level factors added one at a time to the fully adjusted individual-level model (adjusted for Aboriginal status, age, sex and year) due to being highly associated.") %>%
-  pack_rows("Remoteness of Residence", 1, 4) %>%
-  pack_rows("SES quintile", 5, 9) %>%
+      caption="Adjusted rate ratios for area-level variables from the multilevel Poisson regression model with random intercept for area from Table 3 in Randall et al. (2014).  Area-level factors added one at a time to the fully adjusted individual-level model (adjusted for Aboriginal status, age, sex and year) due to being highly associated.") |>
+  pack_rows("Remoteness of Residence", 1, 4) |>
+  pack_rows("SES quintile", 5, 9) |>
   kable_styling(full_width = F)
 ```
 

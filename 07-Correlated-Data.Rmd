@@ -83,9 +83,9 @@ tGOFP <- c("","X","","X","",
 scenarioSimTab <- tibble(tScenario, tModel, tModelName, tBeta, tSEBeta, tTStat, tPVal, tPhi, tEst, tCI, tMeanCount, tSDCount, tGOFP)
 colnames(scenarioSimTab) <- c("Scenario", "Model", "Model Name", "$\\hat{\\beta}_0$", "SE $\\hat{\\beta}_0$", "$t$", "p value", "$\\phi$", "Est prob", "CI prob", "Mean count", "SD count", "GOF p value")
 
-kable(scenarioSimTab, booktabs=T, caption="Summary of simulations for Dams and Pups case study.", escape=F) %>%
-  kable_styling(latex_options = "scale_down", font_size = 9) %>%
-  row_spec(6, bold=T) %>%
+kable(scenarioSimTab, booktabs=T, caption="Summary of simulations for Dams and Pups case study.", escape=F) |>
+  kable_styling(latex_options = "scale_down", font_size = 9) |>
+  row_spec(6, bold=T) |>
   column_spec(9:13, width = "5em")
 ```
 
@@ -133,7 +133,7 @@ count_1b <- rbinom(24, 10, pi_1b)
 theoretical_pi <- tibble(x = 1:250000,
                          p1 = rbeta(x, 0.5, 0.5))
 
-tibble(x = 1:24, pi_1b) %>%
+tibble(x = 1:24, pi_1b) |>
   ggplot() +
     geom_histogram(bins = 5, aes(x = pi_1b, y = ..density..),
                    color = "black", fill = "white") + 
@@ -146,7 +146,7 @@ tibble(x = 1:24, pi_1b) %>%
 
 
 ```{r, scenario1Plot, fig.align="center",out.width="60%",fig.cap= "Counts of deformed pups per dam under Scenarios 1a and 1b.", echo=FALSE, warning=FALSE, message=FALSE}
-scenario_1 <- tibble(pi_1a, count_1a, pi_1b, count_1b) %>%
+scenario_1 <- tibble(pi_1a, count_1a, pi_1b, count_1b) |>
   mutate(phat_1a = count_1a / 10, phat_1b = count_1b / 10)
 
 hist_1a <- ggplot(data = scenario_1, aes(x = count_1a)) + 
@@ -165,7 +165,7 @@ grid.arrange(hist_1a, hist_1b, ncol=1)
 ```
 
 ```{r scenario1Summary, include=FALSE}
-scenario_1 %>% 
+scenario_1 |> 
   summarise(mean_1a = mean(count_1a), sd_1a = sd(count_1a),
             mean_1b = mean(count_1b), sd_1b = sd(count_1b) )
 ```
@@ -382,27 +382,27 @@ grid.arrange(hist1, hist2, hist3, hist4, ncol=1)
 ```
 
 ```{r scenario2Summary, include=FALSE, message=FALSE}
-scenario_2 %>% 
+scenario_2 |> 
   summarise(mean_2a = mean(count_2a), sd_2a = sd(count_2a),
             mean_2b = mean(count_2b), sd_2b = sd(count_2b) )
 ```
 
 ```{r scenario2Tab, echo=FALSE, message=FALSE}
-scenario2Tab <- scenario_2 %>%
-                  group_by(dose) %>%
+scenario2Tab <- scenario_2 |>
+                  group_by(dose) |>
                   summarise(mean_2a_pi = round(mean(pi_2a),3), sd_2a_pi = round(sd(pi_2a),3),
                             mean_2a_cnt = round(mean(count_2a),3), sd_2a_cnt = round(sd(count_2a),3),
                             mean_2b_pi = round(mean(pi_2b),3), sd_2b_pi = round(sd(pi_2b),3),
-                            mean_2b_cnt = round(mean(count_2b),3), sd_2b_cnt = round(sd(count_2b),3)) %>%
+                            mean_2b_cnt = round(mean(count_2b),3), sd_2b_cnt = round(sd(count_2b),3)) |>
                   as.data.frame()
 colnames(scenario2Tab) <- c("Dosage","Mean p", "SD p",
     "Mean Count", "SD Count", "Mean p", "SD p",
     "Mean Count", "SD Count")
 kable(scenario2Tab, booktabs = T, 
-    caption="Summary statistics of Scenario 2 by dose.") %>%
+    caption="Summary statistics of Scenario 2 by dose.") |>
     add_header_above(c(" " = 1, "Scenario 2a" = 4, 
-                       "Scenario 2b" = 4)) %>%
-    kable_styling(latex_options = "scale_down") %>%
+                       "Scenario 2b" = 4)) |>
+    kable_styling(latex_options = "scale_down") |>
     column_spec(c(4:5,8:9), width = "1cm")
 ```
 
@@ -424,7 +424,7 @@ We first model Scenario 2a without adjusting for potential overdispersion. Binom
 Equation \@ref(eq:mod2aBinom) has associated odds ratio corresponding to a 1-mg dose increase of $e^{\beta_1} = 3.54$ with 95\% profile likelihood confidence interval $(2.61, 4.96)$.  We can be 95\% confident that odds of deformity are between 2.61 and 4.96 times higher for each 1-mg increase in dose.
 
 ```{r scenario2aBinom, include=FALSE}
-scenario_2 <- scenario_2 %>%
+scenario_2 <- scenario_2 |>
   mutate(dose = dose,
          phat_2a = count_2a / 10, phat_2b = count_2b / 10,
       logit_2a = log ((count_2a + 0.5) / (10 - count_2a + 0.5)),
@@ -507,14 +507,14 @@ We will consider a subset of the full data set in `treetube.csv` for illustratio
 A sample of 10 observations are displayed in Table \@ref(tab:treeTubeTab).
 
 ```{r treeTubesSetup, include=FALSE}
-treetubes_yr1 <- read_csv("data/treetube.csv") %>%
-  filter(YEAR == 1990 | YEAR == 1991) %>%
-  spread(key = YEAR, value = HEIGHT) %>%
-  mutate(growth_yr1 = `1991` - `1990`) %>%
-  filter(!is.na(growth_yr1)) %>%
+treetubes_yr1 <- read_csv("data/treetube.csv") |>
+  filter(YEAR == 1990 | YEAR == 1991) |>
+  spread(key = YEAR, value = HEIGHT) |>
+  mutate(growth_yr1 = `1991` - `1990`) |>
+  filter(!is.na(growth_yr1)) |>
   rename(tubes = TUBEX, id = ID, transect = TRANSECT, 
          species = SPECIES,
-         height91 = `1991`, height90 = `1990`) %>%
+         height91 = `1991`, height90 = `1990`) |>
   dplyr::select(id, transect, species, tubes, height91, 
                 height90, growth_yr1)
 ```
