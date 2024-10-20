@@ -517,12 +517,10 @@ As in Section \@ref(twostage), we can proceed to fit similar logistic regression
 #   with foul.diff as only predictor
 regressions <- refdata %>% 
   group_by(game) %>% 
-  do(fit = glm(foul.home ~ foul.diff, family = binomial, 
-               data = .))
+  do(tidy(glm(foul.home ~ foul.diff, family = binomial, 
+               data = .)))
 
 glm_info <- regressions %>%
-  tidy(fit) %>%
-  ungroup() %>%
   dplyr::select(game, term, estimate) %>%
   spread(key = term, value = estimate) %>%
   rename(rate = foul.diff, int = `(Intercept)`)
@@ -622,12 +620,10 @@ summary(rate)
 
 regressions <- refdata %>% 
   group_by(hometeam) %>% 
-  do(fit = glm(foul.home ~ foul.diff, family = binomial, 
-               data = .))
+  do(tidy(glm(foul.home ~ foul.diff, family = binomial, 
+               data = .)))
 
 glm_info <- regressions %>%
-  tidy(fit) %>%
-  ungroup() %>%
   dplyr::select(hometeam, term, estimate) %>%
   spread(key = term, value = estimate) %>%
   rename(rate = foul.diff, int = `(Intercept)`)

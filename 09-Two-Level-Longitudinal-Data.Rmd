@@ -131,7 +131,7 @@ chart.long <- chart.wide %>%
   gather(key = "key", value = "MathAvgScore",
          MathAvgScore.0:MathAvgScore.2) %>%
   separate(key, into = c("name", "year08"), sep = "\\.") %>%
-  select(-c("X1", "name")) %>%
+  select(-c("...1", "name")) %>%
   arrange(schoolid, year08) %>%
   mutate(year08 = as.numeric(year08))
 head(chart.long)
@@ -184,7 +184,7 @@ wide.public <- chart.wide %>%
   filter(charter == 0) %>%
   sample_n( dim(wide.charter)[1] )
 sampdata <- bind_rows(wide.charter, wide.public) %>%
-  select(-X1) %>%
+  select(-`...1`) %>%
   mutate(vars = row_number())   # Just use numbers 1-146 as school ids
 head(sampdata)
 
@@ -384,9 +384,9 @@ Another advantage of assuming a linear trend at Level One (within schools) is th
 
 ```{r, include=FALSE, warning=FALSE}
 #95% CI's for slope and intercept of 24 schools	(2 are filtered out since 1 obs)		
-regressions <- smallchart.long %>% 
-  group_by(schoolid) %>% 
-  do(fit = lm(MathAvgScore ~ year08, data=.))
+regressions <- smallchart.long %>%
+  group_by(schoolid) %>%
+  do(tidy(lm(MathAvgScore ~ year08, data=.)))
 
 sd_filter <- smallchart.long %>%
   group_by(schoolid) %>%
@@ -397,21 +397,18 @@ regressions <- regressions %>%
   filter(!is.na(sds))
 
 lm_info1 <- regressions %>%
-  tidy(fit) %>%
-  ungroup() %>%
   select(schoolid, term, estimate) %>%
   spread(key = term, value = estimate) %>%
   rename(rate = year08, int = `(Intercept)`)
 
 lm_info2 <- regressions %>%
-  tidy(fit) %>%
-  ungroup() %>%
   select(schoolid, term, std.error) %>%
   spread(key = term, value = std.error) %>%
   rename(se_rate = year08, se_int = `(Intercept)`)
 
-lm_info <- regressions %>%
-  glance(fit) %>%
+lm_info <- smallchart.long %>%
+  group_by(schoolid) %>%
+  do(glance(lm(MathAvgScore ~ year08, data=.))) %>%
   ungroup() %>%
   select(schoolid, r.squared, df.residual) %>%
   inner_join(lm_info1, by = "schoolid") %>%
@@ -447,7 +444,7 @@ grid.arrange(slope.ci,int.ci,ncol=2)
 # Find slope and intercept of all 618 schools	(540 after filter those with 1 obs)		
 regressions <- chart.long %>% 
   group_by(schoolid) %>% 
-  do(fit = lm(MathAvgScore ~ year08, data=.))
+  do(tidy(lm(MathAvgScore ~ year08, data=.)))
 
 sd_filter <- chart.long %>%
   group_by(schoolid) %>%
@@ -458,21 +455,18 @@ regressions <- regressions %>%
   filter(!is.na(sds))
 
 lm_info1 <- regressions %>%
-  tidy(fit) %>%
-  ungroup() %>%
   select(schoolid, term, estimate) %>%
   spread(key = term, value = estimate) %>%
   rename(rate = year08, int = `(Intercept)`)
 
 lm_info2 <- regressions %>%
-  tidy(fit) %>%
-  ungroup() %>%
   select(schoolid, term, std.error) %>%
   spread(key = term, value = std.error) %>%
   rename(se_rate = year08, se_int = `(Intercept)`)
 
-lm_info <- regressions %>%
-  glance(fit) %>%
+lm_info <- chart.long %>%
+  group_by(schoolid) %>%
+  do(glance(lm(MathAvgScore ~ year08, data=.))) %>%
   ungroup() %>%
   select(schoolid, r.squared, df.residual) %>%
   inner_join(lm_info1, by = "schoolid") %>%

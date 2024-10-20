@@ -144,6 +144,7 @@ remotes::install_version(package = "broom", version = "0.5.6")
 ```
 
 ```{r, echo=FALSE}
+library(tidyverse)
 package_info(needed_pkgs) %>% 
   as_tibble() %>% 
   filter(attached == TRUE) %>% 
